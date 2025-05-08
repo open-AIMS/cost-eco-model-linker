@@ -1,0 +1,30 @@
+﻿cost_type,sheet,factor_names,cell_row,cell_col,range_lower,range_upper,is_cat
+production,Dashboard,setupCost,14,12,1000,1000000,FALSE
+production,Dashboard,Cost,16,12,1000,1000000,FALSE
+production,Dashboard,num_devices,5,5,1,100000000,TRUE
+production,Dashboard,species_no,10,5,19,23,TRUE
+production,Conversions,col_spawn_gam_bun,7,6,57600,70400,TRUE
+production,Conversions,gam_bun_egg,8,7,10,14,TRUE
+production,Conversions,egg_embryo,9,8,0.7,0.9,FALSE
+production,Conversions,embryo_freeswim,10,9,0.7,0.9,FALSE
+production,Conversions,freeswim_settle,11,10,0.7,0.9,FALSE
+production,Conversions,settle_just,12,11,0.7,0.9,FALSE
+production,Conversions,just_unit,14,11,6,9,TRUE
+production,Conversions,just_mature,14,15,0.7,0.9,FALSE
+production,Conversions,1YOEC_yield,19,18,0.6,0.8,FALSE
+production,Logistics,optimal_rear_dens,11,5,1,3,TRUE
+deployment,Dashboard,setupCost,11,11,1000,1000000,FALSE
+deployment,Dashboard,Cost,6,11,1000,1000000,FALSE
+deployment,Dashboard,num_devices,5,4,1000,1000000,TRUE
+deployment,Dashboard,port,6,4,0,4,TRUE
+deployment,Dashboard,DAJ_a_r,9,4,9,10,TRUE
+deployment,Dashboard,DAJ_c_s,10,4,1,2,TRUE
+deployment,Dashboard,deck_space,13,4,39,40,FALSE
+deployment,Lookup Tables,cape_ferg_price,19,7,12500,13500,FALSE
+deployment,Lookup Tables,ship_endurance,19,15,13,15,TRUE
+deployment,Lookup Tables,distance_from_port,54,8,1,210,FALSE
+deployment,Conversions,1YOEC_yield,25,5,0.6,0.8,FALSE
+deployment,Logistics,secs_per_dev,84,6,0,1,TRUE
+deployment,Logistics,proportion,84,9,0.5,0.55,FALSE
+deployment,Logistics,bins_per_tender,83,9,4,6,TRUE
+deployment,Logistics,deployment_dur,38,4,25,28,TRUE

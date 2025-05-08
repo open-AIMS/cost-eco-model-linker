@@ -12,3 +12,4 @@ wheels/
 # Ignore generated econ and cost files
 econ_outputs/*
 cost_outputs/*
+cost_models/*
