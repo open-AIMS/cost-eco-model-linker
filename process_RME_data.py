@@ -7,9 +7,24 @@ import json
 from calculate_metrics import extract_metrics
 
 def load_reef_data():
+    """
+    Loads key reef spatial data.
+
+    """
     return gp.read_file(".\\datasets\\reefmod_gbr.gpkg")
 
 def load_regions_data(economics_spatial_filepath):
+    """
+    Loads key economics spatial data.
+
+    Parameters
+    ----------
+        economics_spatial_filepath : string
+            String giving the path to economics spatial data.
+
+    Returns:
+        regions_data : dataframe
+    """
     regions_data = pd.read_csv(economics_spatial_filepath) # Economic spatial data key
     regions_data["reef_uniqueid"] = [str(i) for i in regions_data["reef_uniqueid"]]
     regions_data = regions_data.rename(columns={'reef_uniqueid':'UNIQUE_ID'})
@@ -17,6 +32,22 @@ def load_regions_data(economics_spatial_filepath):
     return regions_data
 
 def load_result_files(rme_files_path):
+    """
+    Loads results files generated from running scenarios in ReefModEngine.jl.
+
+    Parameters
+    ----------
+        rme_files_path : string
+            String giving the path to resultset folder.
+
+    Returns:
+        results_data : dict
+            Dict containing numpy arrays of results data from running ReefModEngine.jl.
+        scens_df : dataframe
+            Describes scenario parameters year-by-year, including rep, year and intervention levels.
+        iv_dict : dict
+            Contains other key scenario info, such as whether the scenario is counterfactual or intervention.
+    """
     scens_df = pd.read_csv(rme_files_path+"\\iv_yearly_scenarios.csv") # intervention scenarios table
     results_data = nc.Dataset(rme_files_path+"\\results.nc") # Metric results
 
@@ -27,6 +58,22 @@ def load_result_files(rme_files_path):
     return results_data, scens_df, iv_dict
 
 def create_base_economics_dataframe(regions_data, reef_spatial_data, years):
+    """
+    Creates base structure for metrics summary files input to economics modelling.
+
+    Parameters
+    ----------
+        regions_data : dataframe
+            A dataframe with key spatial and economics data for each reef in the GBR (loaded from econ_spatial.csv).
+        reef_spatial_data : dataframe
+            A dataframe from the RME specified key reef IDs and spatial information (loaded from reefmod_gbr.gpkg).
+        years : list
+            Years to be included in the economics output file from the ecological modelling.
+
+    Returns:
+        data_store: dataframe
+            Basic economics file structure to save for each intervention/counterfactual scenario.
+    """
     reef_names = regions_data.reef_name
     unique_ids = regions_data.UNIQUE_ID
     n_reefs = len(regions_data.reef_name)
@@ -50,13 +97,65 @@ def create_base_economics_dataframe(regions_data, reef_spatial_data, years):
     return data_store
 
 def area_weighted_rci(metrics_array, metrics_df):
+    """
+    Processes metrics array into reef condition weighted by reef area.
+
+    Parameters
+    ----------
+        metrics_array : np.array
+            Array containing key sampled metrics and the RCI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+    """
     # Need to scale by total area
     return np.transpose(metrics_array[:, :, 0]*np.array(metrics_df["total_area_nine_zones"]),(1, 0))
 
 def area_saved_above_thresh(metrics_array, metrics_df, rci_threshold=0.4):
-    return np.transpose((metrics_array[:, :, 0] >= rci_threshold)*np.array(metrics_df["total_area_nine_zones"]), (1, 0))
+    """
+    Processes metrics array into area saved at threshold RCI and above.
 
-def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_uncert=0, expert_uncert=1, metrics = [area_saved_above_thresh, area_weighted_rci], economics_spatial_filepath='.//datasets//econ_spatial.csv', econ_storage_path=".//econ_files//"):
+    Parameters
+    ----------
+        metrics_array : np.array
+            Array containing key sampled metrics and the RCI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+        rci_threshold : RCI threshold above which to calculate area saved for.
+    """
+    # ADD MULTIPLY BY CORAL COVER
+    return np.transpose((metrics_array[:, :, 0] >= rci_threshold)*np.array(metrics_df["total_area_nine_zones"]),
+                        (1, 0))
+
+def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_uncert=0, expert_uncert=1,
+                                  metrics = [area_saved_above_thresh, area_weighted_rci],
+                                  economics_spatial_filepath='.//datasets//econ_spatial.csv',
+                                  econ_storage_path=".//econ_files//"):
+    """
+    Main function for creating metric file summarys for input to economics modelling.
+
+    Parameters
+    ----------
+        rme_files_path : string
+            String giving the path to resultset folder.
+        nsims : int
+            Number of simulations to sampling (including uncertainty types as specified)
+        ecol_uncert : int (0 or 1)
+            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+            mean of metrics over climate replicates.
+        shelt_uncert : int (0 or 1)
+            Placeholder to be implemented, will sampling uncertainty in shelter volume parameters.
+        expert_uncert : int (0 or 1)
+            If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
+            if 0 uses RCI condition thresholds averaged over experts considered.
+        economics_spatial_filepath : string
+            Filepath for economics spatial data (econ_spatial.csv)
+        econ_storage_path : string
+            Where to store output economics metrics files.
+
+    Returns:
+        id_filename : string
+            Filename for ID key file, which links economics metrics
+    """
     # Load all relevant data
     regions_data = load_regions_data(economics_spatial_filepath)
 

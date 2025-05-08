@@ -3,7 +3,35 @@ import pandas as pd
 import numpy as np
 import random
 
-def indicator_params(result_set, scen_ids, shelt_uncert, expert_uncert, juv_max_years=[0,18], maxcoraljuv=[]): #, n_sims
+def indicator_params(result_set, scen_ids, shelt_uncert, expert_uncert, juv_max_years=[0,18], maxcoraljuv=[]):
+    """
+    Calculates key parameters for shelter volume and RCI calculations given uncertainty sampling choices.
+
+    Parameters
+    ----------
+        result_set : dict
+            ReefModEngne.jl resultset structure.
+        scen_ids : np.array
+            List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
+        shelt_uncert : int (0/1)
+            Include shelter volume uncertainty sampling if 1 (not currently available).
+        expert_uncert : int (0/1)
+            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
+            thresholds.
+        juv_max_years : list
+            Indices of years to calculate Juveniles max baseline over.
+        maxcoraljuv : np.float
+            Max juveniles baseline (can be included instead of using hindcasting baseline).
+
+    Returns:
+        maxcoraljuv : np.float
+            Maximum juveniles baseline.
+        sheltervolume_parameters : np.array
+            Parameters for sheltervolume regression models.
+        rci_crit : np.array
+            Array of thresholds describing reef condition categories.
+    """
+
     # MAXIMUM JUVENILES
     if maxcoraljuv==[]:
         maxcoraljuv = np.max(result_set["nb_coral_juv"][scen_ids, :, juv_max_years[0]:juv_max_years[1]])
@@ -50,6 +78,33 @@ def indicator_params(result_set, scen_ids, shelt_uncert, expert_uncert, juv_max_
     return maxcoraljuv, sheltervolume_parameters, rci_crit
 
 def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parameters, rci_crit, maxcoraljuv, nsims):
+    """
+    Calculates reef condition for a set of scenarios in the provided ReefModEngine.jl results_data.
+
+    Parameters
+    ----------
+        results_data : dict
+            ReefModEngne.jl resultset structure.
+        scen_ids : np.array
+            List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
+        ecol_uncert : int (0 or 1)
+            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+            mean of metrics over climate replicates.
+        sheltervolume_parameters : np.array
+            Currently unused, but when implemented will allow sampling of uncertainty in shelter volume models
+            to calculate shelter volume.
+        rci_crit : np.array
+            Array of thresholds describing reef condition categories.
+        maxcoraljuv : np.float
+            Max juveniles baseline (can be included instead of using hindcasting baseline).
+        nsims : int
+            Number of simulations to sample
+    Returns:
+        reefcondition : np.array
+            Array containing reef condition of size (nsims, nreefs, nyears).
+        metrics_dict : np.array
+            Structure containing each of the metrics comprising the RCI, each arrays of size (nsims, nreefs, nyears).
+    """
     # Settings
     criteria_threshold = 0.6 # threshold for how many criteria need to be met for category to be satisfied.
     cots_outbreak_threshold = 0.2 # number of CoTS per manta tow to classify as outbreak
@@ -149,12 +204,69 @@ def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parame
     return reefcondition, {"total_cover": total_cover, "shelter_volume": shelterVolume, "coraljuv_relative": coraljuv_relative, "COTSrel_complementary": COTSrel_complementary, "rubble_complementary": rubble_complementary}
 
 def indicator_master(result_set, scen_ids, ecol_uncert, shelt_uncert, expert_uncert, nsims):
+    """
+    Calculates indicator metrics for a set of scenarios in the provided ReefModEngine.jl results_data.
+
+    Parameters
+    ----------
+        result_set : dict
+            ReefModEngne.jl resultset structure.
+        scen_ids : np.array
+            List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
+        ecol_uncert : int (0 or 1)
+            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+            mean of metrics over climate replicates.
+        shelt_uncert : int (0/1)
+            Include shelter volume uncertainty sampling if 1 (not currently available).
+        expert_uncert : int (0/1)
+            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
+            thresholds.
+        nsims : int
+            Number of simulations to sample
+    Returns:
+        reefcondition : np.array
+            Array containing reef condition of size (nsims, nreefs, nyears).
+        metrics_dict : np.array
+            Structure containing each of the metrics comprising the RCI, each arrays of size (nsims, nreefs, nyears).
+    """
     maxcoraljuv, sheltervolume_parameters, rci_crit = indicator_params(result_set, scen_ids, shelt_uncert, expert_uncert)
 
     # Calculate RCI and ecological indicators
     return reef_condition_rme(result_set, scen_ids, ecol_uncert, sheltervolume_parameters, rci_crit, maxcoraljuv, nsims)
 
 def extract_metrics(results_data, scen_ids, nsims, ecol_uncert, shelt_uncert, expert_uncert):
+    """
+    Calculates indicator metrics for a set of scenarios in the provided ReefModEngine.jl results_data and
+    saves in a summary array of size (nsims, nreefs*nyears), suitable to be saved in the economics dataframe
+    format.
+
+    Parameters
+    ----------
+        result_set : dict
+            ReefModEngne.jl resultset structure.
+        scen_ids : np.array
+            List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
+        nsims : int
+            Number of simulations to sample
+        ecol_uncert : int (0 or 1)
+            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+            mean of metrics over climate replicates.
+        shelt_uncert : int (0/1)
+            Include shelter volume uncertainty sampling if 1 (not currently available).
+        expert_uncert : int (0/1)
+            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
+            thresholds.
+    Returns:
+        save_metrics : np.array
+            Array containing the RCI and each of the metrics comprising the RCI, each arrays of size
+            (nsims, nreefs*nyears, nmetrics). The nmetrics dimension indices correspond to:
+                0 - RCI
+                1 - total_cover
+                2 - shelter_volume
+                3 - coraljuv_relativecoral
+                4 - COTSrel_complementary
+                5 - rubble_complementary
+    """
     years = results_data['timesteps'][:]
     num_years = len(years)
     num_reefs = len(results_data['locations'][:])

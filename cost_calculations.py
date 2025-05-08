@@ -16,26 +16,54 @@ def load_config():
 config = load_config()
 
 def get_N(n_draws, n_factors):
+    """
+    Calculate number of sobol samples given number of draws and number of factors.
+
+    """
     return n_draws * ((2 * n_factors) + 2)
 
 def cost_types(cost, contingency, N):
-    # Calculate key cost codes
-    # CAPEX - 1	sum of production and deployment cost
-    # Contingency CAPEX	- 2	% of CAPEX
-    # OPEX - 3	sum of production and deployment cost
-    # Sustaining capital OPEX - 4 set to zero for now (assumed to be included in OPEX through contract)
-    # Contingency OPEX - 5 % of OPEX
-    # Vessel fuel - 6 only relevant if volunteer vessels are used - set to zero for now
-    # CAPEX-monitoring - 7 set to zero (assumed no monitoring cost)
-    # Contingency CAPEX-monitoring - 8	% of CAPEX-monitoring
-    # OPEX-monitoring - 9 set to zero (assumed no monitoring cost)
-    # Sustaining capital OPEX-monitoring - 10 set to zero (assumed no monitoring cost)
-    # Contingency OPEX-monitoring - 11 % of OPEX-monitoring
+    """
+    Calculate key cost codes:
+        1 - CAPEX - sum of production and deployment cost
+        2 - Contingency CAPEX - % of CAPEX
+        3 - OPEX - sum of production and deployment cost
+        4 - Sustaining capital OPEX - set to zero for now (assumed to be included in OPEX through contract)
+        5 - Contingency OPEX - % of OPEX
+        6 - Vessel fuel - only relevant if volunteer vessels are used - set to zero for now
+        7 - CAPEX-monitoring - set to zero (assumed no monitoring cost)
+        8 - Contingency CAPEX-monitoring - % of CAPEX-monitoring
+        9 - OPEX-monitoring - set to zero (assumed no monitoring cost)
+        10 - Sustaining capital OPEX-monitoring - set to zero (assumed no monitoring cost)
+        11 - Contingency OPEX-monitoring - % of OPEX-monitoring
 
+    Parameters
+    ----------
+        cost : dataframe
+            Dataframe containing 'Cost' and 'setupCost' columns.
+        contingency : float
+            Contingency proportion.
+        N : int
+            Number of samples
+    """
     cost = np.reshape(np.array(cost), (2,N))
     return np.vstack((np.vstack((cost[0,:], cost[0,:]*contingency, cost[1,:], np.zeros(N), cost[1,:]*contingency)), np.zeros((6, N))))
 
 def initialise_cost_df(years, N):
+    """
+    Initialize dataframe for storing sampled cost data.
+
+    Parameters
+    ----------
+        years : np.array
+            Intervention years
+        N : int
+            Number of cost data samples
+
+    Returns:
+        cost_df : dataframe
+
+    """
     # Dataframe for saving cost data to
     n_years = len(years)
     cols = ["year", "component"] + ["draw"+str(n) for n in range(1, N+1)]
@@ -45,6 +73,26 @@ def initialise_cost_df(years, N):
     return cost_df
 
 def factors_dataframe_update(n_draws):
+    """
+    Sample cost model parameters.
+
+    Parameters
+    ----------
+        n_draws : int
+            Number of draws to sample
+
+    Returns:
+        factor_specs_dep : dict
+            Factor specification for sampling factors in the deployment cost model.
+        factors_df_dep : dataframe
+            Sampled factors dataframe for the deployment cost model.
+        factor_specs_prod : dict
+            Factor specification for sampling factors in the production cost model.
+        factors_df_prod : dataframe
+            Sampled factors dataframe for the production cost model
+        n_factors : int
+            Min number of factors in models.
+    """
     # Sample deployment model factors
     sp_dep, factor_specs_dep = problem_spec("deployment")
     sp_dep.sample_sobol(n_draws, calc_second_order=True)
@@ -64,6 +112,19 @@ def factors_dataframe_update(n_draws):
     return factor_specs_dep, factors_df_dep, factor_specs_prod, factors_df_prod, n_factors
 
 def update_factors(factors_df_dep, factors_df_prod, ID_key):
+    """
+    Update sampled cost model parameter dataframes with intervention specific parameters.
+
+    Parameters
+    ----------
+        factors_df_dep : dataframe
+            Factors dataframe for the deployment cost model.
+        factors_df_prod : dataframe
+            Factors dataframe for the production cost model
+        ID_key : dataframe
+            Intervention specification dataframe containing intervention parameters.
+
+    """
     factors_df_dep['num_devices'] = ID_key["number_of_1YO_corals"].iloc[0]
     factors_df_prod['num_devices'] = ID_key["number_of_1YO_corals"].iloc[0]
     factors_df_prod['species_no'] = ID_key["number_of_species"].iloc[0]
@@ -73,6 +134,20 @@ def update_factors(factors_df_dep, factors_df_prod, ID_key):
     return factors_df_dep, factors_df_prod
 
 def update_setupcost_factors(factors_df_dep, factors_df_prod, ID_key):
+    """
+    Update number of corals to correctly calculate setup cost for years after the first intervention year.
+    Setup costs are only accrued for additional corals deployed relative to the previous year.
+
+    Parameters
+    ----------
+        factors_df_dep : dataframe
+            Factors dataframe for the deployment cost model.
+        factors_df_prod : dataframe
+            Factors dataframe for the production cost model
+        ID_key : dataframe
+            Intervention specification dataframe containing intervention parameters.
+
+    """
     factors_df_dep['num_devices'] = factors_df_dep['num_devices'] - ID_key["number_of_1YO_corals"].iloc[0]
     factors_df_prod['num_devices'] = factors_df_prod['num_devices'] - ID_key["number_of_1YO_corals"].iloc[0]
 
@@ -80,6 +155,24 @@ def update_setupcost_factors(factors_df_dep, factors_df_prod, ID_key):
 
 def calculate_costs(ID_key, n_draws, deploy_model_filepath=config["deploy_model_filepath"],
                  prod_model_filepath=config["prod_model_filepath"], cont_p = 0.8):
+    """
+    Sample costs for a set of interventions specified in ID_key, sampling n_draws.
+
+    Parameters
+    ----------
+        ID_key : dataframe
+            Dataframe created by running create_economics_metric_files connecting economics metric files to
+            intervention scenario IDs and parameters.
+        n_draws : int
+            Number of draws to sample cost models.
+        deploy_model_filepath : string
+            Path to deployment cost model.
+        prod_model_filepath : string
+            Path to production cost model.
+        cont_p : float
+            Contingency cost proportion.
+
+    """
 
     for scen_id in np.unique(ID_key.ID):
         n_reps = int(max(ID_key.rep)) # Number of rme reps (ecological uncertainty)
