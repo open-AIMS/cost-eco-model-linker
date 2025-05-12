@@ -86,6 +86,7 @@ dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyyaml" },
+    { name = "scipy" },
 ]
 
 [package.metadata]
@@ -96,6 +97,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.2.4" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "scipy", specifier = ">=1.15.2" },
 ]
 
 [[package]]
