@@ -4,6 +4,7 @@ import geopandas as gp
 import numpy as np
 import json
 
+from reef_distances import find_representative_reefs
 from calculate_metrics import extract_metrics
 
 def load_reef_data():
@@ -127,7 +128,7 @@ def area_saved_above_thresh(metrics_array, metrics_df, rci_threshold=0.4):
                         (1, 0))
 
 def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_uncert=0, expert_uncert=1,
-                                  metrics = [area_saved_above_thresh, area_weighted_rci],
+                                  metrics = [area_saved_above_thresh, area_weighted_rci], max_dist = 25.0,
                                   economics_spatial_filepath='.//datasets//econ_spatial.csv',
                                   econ_storage_path=".//econ_files//"):
     """
@@ -147,6 +148,9 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
         expert_uncert : int (0 or 1)
             If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
             if 0 uses RCI condition thresholds averaged over experts considered.
+        max_dist : float
+            Maximum allowable distance to travel between reefs without going back to port
+            (used for cost calculations to estimate cost of travel for an intervention.)
         economics_spatial_filepath : string
             Filepath for economics spatial data (econ_spatial.csv)
         econ_storage_path : string
@@ -180,7 +184,10 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
     unique_cf_scens = np.where(np.array(iv_dict["counterfactual"]).astype(bool))[0]
 
     # Setup key table structure used by economics modelling
-    id_key_df_store = pd.DataFrame(columns=['ID', 'results_filename', 'intervention_years', 'number_of_1YO_corals', 'port_id', 'distance_to_port_NM', 'intervention_reef_id', 'number_of_species', 'start_year', 'end_year'])
+    id_key_df_store = pd.DataFrame(columns=['ID', 'results_filename', 'intervention_years',
+                                            'number_of_1YO_corals', 'port_id', 'distance_to_port_NM',
+                                            'intervention_reef_id', 'number_of_species', 'start_year',
+                                            'end_year'])
 
     # Save a csv for each unique intervention, one for cf and one for iv runs
     for iv_idx in intervention_ids:
@@ -202,16 +209,20 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
         new_cols = ["sim_{0}".format(i) for i in range(1,nsims+1)]
         data_store[new_cols] = np.zeros((data_store.shape[0], len(new_cols)))
 
+        # Get representative reefs for each reef cluster (see find_representative_reefs for more info)
+        rep_reefs = find_representative_reefs(reef_spatial_data, regions_data, iv_reefs, max_dist = max_dist)
+
         # Setup structure for intervention key - links intervention ID and filename to cost model data
         id_key_df = scens_df_iv[["intervention id", "year", "rep", "number of corals"]]
         n_scens_id = id_key_df.shape[0]
-        id_key_df = id_key_df.loc[id_key_df.index.repeat(len(iv_reefs))]
-        id_key_df["intervention_reef_id"] = np.repeat(iv_reefs, n_scens_id)
+        id_key_df = id_key_df.loc[id_key_df.index.repeat(len(rep_reefs))]
+        id_key_df["intervention_reef_id"] = np.repeat(rep_reefs, n_scens_id)
         id_key_df["distance_to_port_NM"] = np.zeros((n_scens_id,))
 
         # Add distance to port data to save in intervention key
-        for reef in iv_reefs:
-            id_key_df.loc[id_key_df["intervention_reef_id"]==reef, "distance_to_port_NM"] = (data_store.loc[data_store["reef_gbrmpa_id"]==reef,["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m # Convert to nautical miles
+        for reef in rep_reefs:
+            id_key_df.loc[id_key_df["intervention_reef_id"]==reef, "distance_to_port_NM"] = (data_store.loc[data_store["reef_gbrmpa_id"]==reef,
+                                                                                                            ["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m # Convert to nautical miles
 
         # Extract metrics for intervention and counterfactual scenarios
         metrics_data_iv = extract_metrics(results_data, iv_scens, nsims, ecol_uncert, shelt_uncert, expert_uncert)
@@ -234,7 +245,7 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
         id_key_df["number_of_species"] = 6 # Set at 6 as RME
         id_key_df["start_year"] = start_year
         id_key_df["end_year"] = end_year
-        id_key_df = id_key_df.rename(columns={'number of corals':'number_of_1YO_corals','intervention id':'ID', 'year':'intervention_years'})
+        id_key_df = id_key_df.rename(columns={'number of corals':'number_of_1YO_corals', 'intervention id':'ID', 'year':'intervention_years'})
         id_key_df_store = pd.concat([id_key_df_store, id_key_df])
 
     # Save intervention key for generating cost data file for saved intervention and cf files
