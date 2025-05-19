@@ -5,7 +5,7 @@ import numpy as np
 import json
 
 from reef_distances import find_representative_reefs
-from calculate_metrics import extract_metrics
+from calculate_metrics import extract_metrics, default_uncertainty_dict
 
 def load_reef_data():
     """
