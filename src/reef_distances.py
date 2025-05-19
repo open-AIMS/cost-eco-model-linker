@@ -20,7 +20,7 @@ def haversine(x, y):
     r = 6371 # Radius of earth in kilometers. Determines return value units.
     return c * r
 
-def find_representative_reefs(reef_spatial_data, regions_data, iv_reefs, max_dist = 25.0):
+def find_representative_reefs(reef_spatial_data, regions_data, iv_reefs, max_dist = 50.0):
     """
     Find clusters of reefs within max_dist of each other. These represent the furthest a ship would travel
     between reefs to implement interventions before going back to port. For reefs in unique clusters, the reef

@@ -176,7 +176,7 @@ def raw_rti(metrics_dict, metrics_df):
     return np.transpose(metrics_dict["RTI"], (1, 0))
 
 def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
-                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci], max_dist = 25.0,
+                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci], max_dist = 50.0,
                                   economics_spatial_filepath='.//datasets//econ_spatial.csv',
                                   econ_storage_path=".//econ_outputs//"):
     """
