@@ -106,7 +106,7 @@ def area_weighted_rti(metrics_dict, metrics_df):
     Parameters
     ----------
         metrics_dict : dict
-            Array containing key sampled metrics and the RCI
+            Dict containing key sampled metrics and the RCI
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
     """
@@ -119,7 +119,7 @@ def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
     Parameters
     ----------
         metrics_dict : dict
-            Array containing key sampled metrics and the RCI
+            Dict containing key sampled metrics and the RCI
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
         rci_threshold : RCI threshold above which to calculate area saved for.
@@ -129,6 +129,25 @@ def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
     rci[rci < rci_threshold]  = 0
     return np.transpose(rci*np.array(metrics_df["total_area_nine_zones"]),
                         (1, 0))
+
+def rfi(metrics_dict, metrics_df, rfi_thresholds=[0.74, 29.91]):
+    """
+    Processes metrics dict into area at threshold RFI and above.
+    Minimum fish biomass is 0.74 kg km2. This was the minimum observation in the Graham and Nash,
+    2012 dataset. Similarly, max fish biomass is 29.91kg km2.
+
+    Parameters
+    ----------
+        metrics_dict : dict
+            Dict containing key sampled metrics and the RFI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+        rfi_thresholds : RFI thresholds (min and max fish biomass)
+    """
+    rfi = metrics_dict["RFI"]
+    rfi[rfi < rfi_thresholds[1]] = rfi_thresholds[1]
+    rfi[rfi > rfi_thresholds[2]]  = rfi_thresholds[1]
+    return np.transpose(rfi, (1, 0))
 
 def raw_rci(metrics_dict, metrics_df):
     """
@@ -142,6 +161,19 @@ def raw_rci(metrics_dict, metrics_df):
             Dataframe containing scenario summary dataframe
     """
     return np.transpose(metrics_dict["RCI"], (1, 0))
+
+def raw_rti(metrics_dict, metrics_df):
+    """
+    Processes metrics dict into raw RTI for table storage.
+
+    Parameters
+    ----------
+        metrics_dict : dict
+            Array containing key sampled metrics and the RTI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+    """
+    return np.transpose(metrics_dict["RTI"], (1, 0))
 
 def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
                                   metrics = [area_saved_rci, area_weighted_rti, raw_rci], max_dist = 25.0,
