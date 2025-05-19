@@ -10,6 +10,7 @@ wheels/
 .venv
 
 # Ignore generated econ and cost files
-econ_outputs/*
-cost_outputs/*
-cost_models/*
+src/econ_outputs/*
+src/cost_outputs/*
+src/cost_models/*
+src/intervention_keys/*

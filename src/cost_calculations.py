@@ -18,24 +18,23 @@ config = load_config()
 def get_N(n_draws, n_factors):
     """
     Calculate number of sobol samples given number of draws and number of factors.
-
     """
     return n_draws * ((2 * n_factors) + 2)
 
 def cost_types(cost, contingency, N):
     """
     Calculate key cost codes:
-        1 - CAPEX - sum of production and deployment cost
-        2 - Contingency CAPEX - % of CAPEX
-        3 - OPEX - sum of production and deployment cost
-        4 - Sustaining capital OPEX - set to zero for now (assumed to be included in OPEX through contract)
-        5 - Contingency OPEX - % of OPEX
-        6 - Vessel fuel - only relevant if volunteer vessels are used - set to zero for now
-        7 - CAPEX-monitoring - set to zero (assumed no monitoring cost)
-        8 - Contingency CAPEX-monitoring - % of CAPEX-monitoring
-        9 - OPEX-monitoring - set to zero (assumed no monitoring cost)
-        10 - Sustaining capital OPEX-monitoring - set to zero (assumed no monitoring cost)
-        11 - Contingency OPEX-monitoring - % of OPEX-monitoring
+    1 - CAPEX - sum of production and deployment cost
+    2 - Contingency CAPEX - % of CAPEX
+    3 - OPEX - sum of production and deployment cost
+    4 - Sustaining capital OPEX - set to zero for now (assumed to be included in OPEX through contract)
+    5 - Contingency OPEX - % of OPEX
+    6 - Vessel fuel - only relevant if volunteer vessels are used - set to zero for now
+    7 - CAPEX-monitoring - set to zero (assumed no monitoring cost)
+    8 - Contingency CAPEX-monitoring - % of CAPEX-monitoring
+    9 - OPEX-monitoring - set to zero (assumed no monitoring cost)
+    10 - Sustaining capital OPEX-monitoring - set to zero (assumed no monitoring cost)
+    11 - Contingency OPEX-monitoring - % of OPEX-monitoring
 
     Parameters
     ----------
@@ -60,9 +59,9 @@ def initialise_cost_df(years, N):
         N : int
             Number of cost data samples
 
-    Returns:
+    Returns
+    -------
         cost_df : dataframe
-
     """
     # Dataframe for saving cost data to
     n_years = len(years)
@@ -81,7 +80,8 @@ def factors_dataframe_update(n_draws):
         n_draws : int
             Number of draws to sample
 
-    Returns:
+    Returns
+    -------
         factor_specs_dep : dict
             Factor specification for sampling factors in the deployment cost model.
         factors_df_dep : dataframe
@@ -123,7 +123,6 @@ def update_factors(factors_df_dep, factors_df_prod, ID_key):
             Factors dataframe for the production cost model
         ID_key : dataframe
             Intervention specification dataframe containing intervention parameters.
-
     """
     factors_df_dep['num_devices'] = ID_key["number_of_1YO_corals"].iloc[0]
     factors_df_prod['num_devices'] = ID_key["number_of_1YO_corals"].iloc[0]
@@ -146,7 +145,6 @@ def update_setupcost_factors(factors_df_dep, factors_df_prod, ID_key):
             Factors dataframe for the production cost model
         ID_key : dataframe
             Intervention specification dataframe containing intervention parameters.
-
     """
     factors_df_dep['num_devices'] = factors_df_dep['num_devices'] - ID_key["number_of_1YO_corals"].iloc[0]
     factors_df_prod['num_devices'] = factors_df_prod['num_devices'] - ID_key["number_of_1YO_corals"].iloc[0]
@@ -171,9 +169,7 @@ def calculate_costs(ID_key, n_draws, deploy_model_filepath=config["deploy_model_
             Path to production cost model.
         cont_p : float
             Contingency cost proportion.
-
     """
-
     for scen_id in np.unique(ID_key.ID):
         n_reps = int(max(ID_key.rep)) # Number of rme reps (ecological uncertainty)
         scen_idx = ID_key.ID==scen_id # Intervention scenario ID to link costs to ecological model outcomes
@@ -221,4 +217,4 @@ def calculate_costs(ID_key, n_draws, deploy_model_filepath=config["deploy_model_
                 factors_df_dep = factors_df_dep.drop(columns=["Cost","setupCost"])
                 factors_df_prod = factors_df_prod.drop(columns=["Cost","setupCost"])
 
-        cost_df.to_csv('./Outputs/intervention'+str(scen_id)+'_mc_cost_data.csv')
+        cost_df.to_csv('./cost_outputs/intervention'+str(scen_id)+'_mc_cost_data.csv')

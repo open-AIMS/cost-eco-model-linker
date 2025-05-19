@@ -8,7 +8,7 @@ rme_files_path = "C:\\Users\\rcrocker\\Documents\\Github\\ReefModEngine.jl\\sand
 # Number of sims for metrics sampling (default includes ecological and expert uncertainty in RCI calcs)
 nsims = 3
 # Create metric datafiles for economics modelling and extract filename for intervention key
-int_keys_fn = prd.create_economics_metric_files(rme_files_path)
+int_keys_fn = prd.create_economics_metric_files(rme_files_path, nsims)
 # Number of cost model draws
 n_draws = 2**2
 
