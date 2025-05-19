@@ -4,6 +4,28 @@ import numpy as np
 import random
 
 def default_uncertainty_dict():
+    """
+    Creates a dictionary containing default uncertainty parameter settings. Can be modified to control
+    what sources of uncertainty are sampled when calculating metrics.
+
+    Returns
+    ----------
+        uncertainty_dict : dict
+            Contains information on what uncertainty types to sample.
+        - ecol_uncert : int (0 or 1)
+            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+            mean of metrics over climate replicates.
+        - shelt_uncert : int (0 or 1)
+            Placeholder to be implemented, will sampling uncertainty in shelter volume parameters.
+        - expert_uncert : int (0 or 1)
+            If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
+            if 0 uses RCI condition thresholds averaged over experts considered.
+        - rti_uncert : int (0 or 1)
+            If 1 includes rti uncertainty by sampling linear regression parameters used to convert RCI to continuous
+            form.
+        - rfi uncert : (0 or 1)
+            If 1 includes RFI uncertainty by sampling linear regression parameters used to calculate RFI.
+    """
     uncertainty_dict = {"ecol_uncert" : 1,
                         "shelt_uncert" : 0,
                         "expert_uncert" : 1,
@@ -21,11 +43,8 @@ def indicator_params(result_set, scen_ids, uncertainty_dict=default_uncertainty_
             ReefModEngne.jl resultset structure.
         scen_ids : np.array
             List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
-        shelt_uncert : int (0/1)
-            Include shelter volume uncertainty sampling if 1 (not currently available).
-        expert_uncert : int (0/1)
-            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
-            thresholds.
+        uncertainty_dict : dict
+            Contains information of which types of uncertainty to sample when processing metrics.
         juv_max_years : list
             Indices of years to calculate Juveniles max baseline over.
         maxcoraljuv : np.float
@@ -161,14 +180,17 @@ def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parame
     # Extract constants and variables
     nsims, ngroups, nreefs, nyrs  = coral_cover_per_taxa.shape
 
-    juv_sizes = 1
-    adol_sizes = 2
-    adult_sizes = 3
+    # The ollowing code is for calculating SV from number of corals, which is not currently possible with default
+    # metrics saved in ReefModEngine.jl runs
 
-    if ngroups == 12:
-        ntaxa = ngroups/2
-    elif ngroups == 6:
-        ntaxa = ngroups
+    # juv_sizes = 1
+    # adol_sizes = 2
+    # adult_sizes = 3
+
+    # if ngroups == 12:
+    #     ntaxa = ngroups/2
+    # elif ngroups == 6:
+    #     ntaxa = ngroups
 
     # corals[:, :, :, :, juv_sizes] = data.nb_coral_juv
     # corals[:, :, :, :, adol_sizes] = data.nb_coral_adol
@@ -257,16 +279,8 @@ def indicator_master(result_set, scen_ids, nsims, uncertainty_dict=default_uncer
     ----------
         result_set : dict
             ReefModEngne.jl resultset structure.
-        scen_ids : np.array
-            List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
-        ecol_uncert : int (0 or 1)
-            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
-            mean of metrics over climate replicates.
-        shelt_uncert : int (0/1)
-            Include shelter volume uncertainty sampling if 1 (not currently available).
-        expert_uncert : int (0/1)
-            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
-            thresholds.
+        uncertainty_dict : dict
+            Contains information of which types of uncertainty to sample when processing metrics.
         nsims : int
             Number of simulations to sample
 
@@ -300,14 +314,8 @@ def extract_metrics(results_data, scen_ids, nsims, uncertainty_dict=default_unce
             List of scenario IDs to consider (e.g. only sample counterfactual/intervention etc.).
         nsims : int
             Number of simulations to sample
-        ecol_uncert : int (0 or 1)
-            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
-            mean of metrics over climate replicates.
-        shelt_uncert : int (0/1)
-            Include shelter volume uncertainty sampling if 1 (not currently available).
-        expert_uncert : int (0/1)
-            Include expert opinion uncertainty in sampling RCI thresholds if 1, otherwise use mean expert
-            thresholds.
+        uncertainty_dict : dict
+            Contains information of which types of uncertainty to sample when processing metrics.
 
     Returns
     -------
