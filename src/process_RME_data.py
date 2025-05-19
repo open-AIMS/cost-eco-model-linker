@@ -4,12 +4,12 @@ import geopandas as gp
 import numpy as np
 import json
 
-from calculate_metrics import extract_metrics
+# from reef_distances import find_representative_reefs
+from calculate_metrics import extract_metrics, default_uncertainty_dict
 
 def load_reef_data():
     """
     Loads key reef spatial data.
-
     """
     return gp.read_file(".\\datasets\\reefmod_gbr.gpkg")
 
@@ -22,7 +22,8 @@ def load_regions_data(economics_spatial_filepath):
         economics_spatial_filepath : string
             String giving the path to economics spatial data.
 
-    Returns:
+    Returns
+    -------
         regions_data : dataframe
     """
     regions_data = pd.read_csv(economics_spatial_filepath) # Economic spatial data key
@@ -40,7 +41,8 @@ def load_result_files(rme_files_path):
         rme_files_path : string
             String giving the path to resultset folder.
 
-    Returns:
+    Returns
+    -------
         results_data : dict
             Dict containing numpy arrays of results data from running ReefModEngine.jl.
         scens_df : dataframe
@@ -70,7 +72,8 @@ def create_base_economics_dataframe(regions_data, reef_spatial_data, years):
         years : list
             Years to be included in the economics output file from the ecological modelling.
 
-    Returns:
+    Returns
+    -------
         data_store: dataframe
             Basic economics file structure to save for each intervention/counterfactual scenario.
     """
@@ -96,40 +99,54 @@ def create_base_economics_dataframe(regions_data, reef_spatial_data, years):
 
     return data_store
 
-def area_weighted_rci(metrics_array, metrics_df):
+def area_weighted_rti(metrics_dict, metrics_df):
     """
-    Processes metrics array into reef condition weighted by reef area.
+    Processes metrics dict into continuous reef condition weighted by reef area.
 
     Parameters
     ----------
-        metrics_array : np.array
+        metrics_dict : dict
             Array containing key sampled metrics and the RCI
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
     """
-    # Need to scale by total area
-    return np.transpose(metrics_array[:, :, 0]*np.array(metrics_df["total_area_nine_zones"]),(1, 0))
+    return np.transpose(metrics_dict["RTI"]*np.array(metrics_df["total_area_nine_zones"]/np.sum(metrics_df["total_area_nine_zones"])),(1, 0))
 
-def area_saved_above_thresh(metrics_array, metrics_df, rci_threshold=0.4):
+def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
     """
-    Processes metrics array into area saved at threshold RCI and above.
+    Processes metrics dict into area at threshold RCI and above.
 
     Parameters
     ----------
-        metrics_array : np.array
+        metrics_dict : dict
             Array containing key sampled metrics and the RCI
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
         rci_threshold : RCI threshold above which to calculate area saved for.
     """
-    # ADD MULTIPLY BY CORAL COVER
-    return np.transpose((metrics_array[:, :, 0] >= rci_threshold)*np.array(metrics_df["total_area_nine_zones"]),
+    rci = metrics_dict["RCI"]
+    rci[rci >= rci_threshold] = 1
+    rci[rci < rci_threshold]  = 0
+    return np.transpose(rci*np.array(metrics_df["total_area_nine_zones"]),
                         (1, 0))
 
-def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_uncert=0, expert_uncert=1,
-                                  metrics = [area_saved_above_thresh, area_weighted_rci],
+def raw_rci(metrics_dict, metrics_df):
+    """
+    Processes metrics dict into raw RCI for table storage.
+
+    Parameters
+    ----------
+        metrics_dict : dict
+            Array containing key sampled metrics and the RCI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+    """
+    return np.transpose(metrics_dict["RCI"], (1, 0))
+
+def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
+                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci], max_dist = 25.0,
                                   economics_spatial_filepath='.//datasets//econ_spatial.csv',
-                                  econ_storage_path=".//econ_files//"):
+                                  econ_storage_path=".//econ_outputs//"):
     """
     Main function for creating metric file summarys for input to economics modelling.
 
@@ -139,20 +156,23 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
             String giving the path to resultset folder.
         nsims : int
             Number of simulations to sampling (including uncertainty types as specified)
-        ecol_uncert : int (0 or 1)
-            If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
-            mean of metrics over climate replicates.
-        shelt_uncert : int (0 or 1)
-            Placeholder to be implemented, will sampling uncertainty in shelter volume parameters.
-        expert_uncert : int (0 or 1)
-            If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
-            if 0 uses RCI condition thresholds averaged over experts considered.
+        uncertainty_dict : dict
+            Contains information on what uncertainty types to sample.
+            ecol_uncert : int (0 or 1)
+                If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
+                mean of metrics over climate replicates.
+            shelt_uncert : int (0 or 1)
+                Placeholder to be implemented, will sampling uncertainty in shelter volume parameters.
+            expert_uncert : int (0 or 1)
+                If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
+                if 0 uses RCI condition thresholds averaged over experts considered.
         economics_spatial_filepath : string
             Filepath for economics spatial data (econ_spatial.csv)
         econ_storage_path : string
             Where to store output economics metrics files.
 
-    Returns:
+    Returns
+    -------
         id_filename : string
             Filename for ID key file, which links economics metrics
     """
@@ -214,15 +234,15 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
             id_key_df.loc[id_key_df["intervention_reef_id"]==reef, "distance_to_port_NM"] = (data_store.loc[data_store["reef_gbrmpa_id"]==reef,["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m # Convert to nautical miles
 
         # Extract metrics for intervention and counterfactual scenarios
-        metrics_data_iv = extract_metrics(results_data, iv_scens, nsims, ecol_uncert, shelt_uncert, expert_uncert)
-        metrics_data_cf = extract_metrics(results_data, cf_scens, nsims, ecol_uncert, shelt_uncert, expert_uncert)
+        metrics_data_iv = extract_metrics(results_data, iv_scens, nsims, uncertainty_dict=uncertainty_dict)
+        metrics_data_cf = extract_metrics(results_data, cf_scens, nsims, uncertainty_dict=uncertainty_dict)
 
         for met_func in metrics:
             data_store[new_cols] = met_func(metrics_data_iv, data_store)
-            iv_filename = 'intervention'+str(iv_idx)+'_'+met_func.__name__+'_ecol0_intervention.csv'
+            iv_filename = 'intervention'+str(iv_idx)+'_var_'+met_func.__name__+'_ecol0_intervention.csv'
             data_store.to_csv(econ_storage_path+iv_filename)
             data_store[new_cols] = met_func(metrics_data_cf, data_store)
-            cf_filename = 'counterfactual'+str(iv_idx)+'_'+met_func.__name__+'_ecol0_intervention.csv'
+            cf_filename = 'counterfactual'+str(iv_idx)+'_var_'+met_func.__name__+'_ecol0_intervention.csv'
             data_store.to_csv(econ_storage_path+cf_filename)
 
         # Drop data columns to allow those for next intervention to be added
@@ -238,7 +258,7 @@ def create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_un
         id_key_df_store = pd.concat([id_key_df_store, id_key_df])
 
     # Save intervention key for generating cost data file for saved intervention and cf files
-    id_filename = "intervention_ID_key_"+rme_files_path.split("\\")[-1]+".csv"
+    id_filename = ".\\intervention_keys\\intervention_ID_key_"+rme_files_path.split("\\")[-1]+".csv"
     id_key_df_store.to_csv(id_filename)
 
     return id_filename
