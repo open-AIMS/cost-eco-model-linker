@@ -158,14 +158,6 @@ def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=defaul
             Number of simulations to sampling (including uncertainty types as specified)
         uncertainty_dict : dict
             Contains information on what uncertainty types to sample.
-            ecol_uncert : int (0 or 1)
-                If 1 includes ecological uncertainty by sampling metrics over climate replicates, if 0 just uses
-                mean of metrics over climate replicates.
-            shelt_uncert : int (0 or 1)
-                Placeholder to be implemented, will sampling uncertainty in shelter volume parameters.
-            expert_uncert : int (0 or 1)
-                If 1 includes expert uncertainty by sampling RCI condition thresholds over several expert opinions,
-                if 0 uses RCI condition thresholds averaged over experts considered.
         economics_spatial_filepath : string
             Filepath for economics spatial data (econ_spatial.csv)
         econ_storage_path : string
