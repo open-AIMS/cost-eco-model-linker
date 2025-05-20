@@ -10,5 +10,7 @@ and sampling the intervention cost models using cost_model_queries.
 Contents
 --------
 .. toctree::
-    configuration
     example_workflow
+    metrics
+    cost_models
+    output_file_format

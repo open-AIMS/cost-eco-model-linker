@@ -1,0 +1,13 @@
+,ID,results_filename,intervention_years,number_of_1YO_corals,port_id,distance_to_port_NM,intervention_reef_id,number_of_species,start_year,end_year,rep
+0,1,intervention1_metric_name_ecol0_intervention.csv,2027,823235.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+1,1,intervention1_metric_name_ecol0_intervention.csv,2027,882794.0,1,25.9326612742256,16-071,6,2025,2099,2.0
+2,1,intervention1_metric_name_ecol0_intervention.csv,2028,140294.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+3,1,intervention1_metric_name_ecol0_intervention.csv,2028,209118.0,1,25.9326612742256,16-071,6,2025,2099,2.0
+4,1,intervention1_metric_name_ecol0_intervention.csv,2029,133676.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+5,1,intervention1_metric_name_ecol0_intervention.csv,2029,119779.0,1,25.9326612742256,16-071,6,2025,2099,2.0
+6,2,intervention2_metric_name_ecol0_intervention.csv,2027,833162.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+7,2,intervention2_metric_name_ecol0_intervention.csv,2027,825221.0,1,25.9326612742256,16-071,6,2025,2099,2.0
+8,2,intervention2_metric_name_ecol0_intervention.csv,2028,101912.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+9,2,intervention2_metric_name_ecol0_intervention.csv,2028,138309.0,1,25.9326612742256,16-071,6,2025,2099,2.0
+10,2,intervention2_metric_name_ecol0_intervention.csv,2029,95294.0,1,25.9326612742256,16-071,6,2025,2099,1.0
+11,2,intervention2_metric_name_ecol0_intervention.csv,2029,93309.0,1,25.9326612742256,16-071,6,2025,2099,2.0
