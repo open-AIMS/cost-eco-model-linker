@@ -25,12 +25,14 @@ def default_uncertainty_dict():
             form.
         - rfi uncert : (0 or 1)
             If 1 includes RFI uncertainty by sampling linear regression parameters used to calculate RFI.
+
     """
     uncertainty_dict = {"ecol_uncert" : 1,
                         "shelt_uncert" : 0,
                         "expert_uncert" : 1,
                         "rti_uncert" : 1,
                         "rfi_uncert" : 1}
+
     return uncertainty_dict
 
 def indicator_params(result_set, scen_ids, uncertainty_dict=default_uncertainty_dict(), juv_max_years=[0,18], maxcoraljuv=[]):
@@ -265,6 +267,7 @@ def rti_rme(ecol_indicators, rti_intercept):
 
     all_reeftourism[all_reeftourism > 0.9] = 0.9
     all_reeftourism[all_reeftourism < 0.1] = 0.1
+
     return all_reeftourism
 
 def rfi_rme(total_cover, intercept1, slope1, intercept2, slope2):

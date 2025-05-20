@@ -10,6 +10,9 @@ from cost_model_queries.sampling.sampling_functions import (
 )
 
 def load_config():
+    """
+    Loads config file containing paths to the cost models.
+    """
     with open('config.json', 'r') as file:
         return json.load(file)
 

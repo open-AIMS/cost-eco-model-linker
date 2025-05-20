@@ -127,6 +127,7 @@ def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
     rci = metrics_dict["RCI"]
     rci[rci >= rci_threshold] = 1
     rci[rci < rci_threshold]  = 0
+
     return np.transpose(rci*np.array(metrics_df["total_area_nine_zones"]),
                         (1, 0))
 
@@ -147,6 +148,7 @@ def rfi(metrics_dict, metrics_df, rfi_thresholds=[0.74, 29.91]):
     rfi = metrics_dict["RFI"]
     rfi[rfi < rfi_thresholds[1]] = rfi_thresholds[1]
     rfi[rfi > rfi_thresholds[2]]  = rfi_thresholds[1]
+
     return np.transpose(rfi, (1, 0))
 
 def raw_rci(metrics_dict, metrics_df):
@@ -160,6 +162,7 @@ def raw_rci(metrics_dict, metrics_df):
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
     """
+
     return np.transpose(metrics_dict["RCI"], (1, 0))
 
 def raw_rti(metrics_dict, metrics_df):
@@ -173,6 +176,7 @@ def raw_rti(metrics_dict, metrics_df):
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
     """
+
     return np.transpose(metrics_dict["RTI"], (1, 0))
 
 def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
