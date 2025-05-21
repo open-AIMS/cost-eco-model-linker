@@ -90,7 +90,7 @@ def create_base_economics_dataframe(regions_data, reef_spatial_data, years):
     data_store["UNIQUE_ID"] = np.repeat(np.array(unique_ids), len(years)) # Unique ID for data join
     data_store["reef_gbrmpa_id"] = np.repeat("", n_reefs*len(years))
 
-    # Add GBRMPA IDs by matching UNIUQE_ID (needed to match up for inner join with economics spatial data)
+    # Add GBRMPA IDs by matching UNIQUE_ID (needed to match up for inner join with economics spatial data)
     for id in unique_ids:
         data_store.loc[data_store["UNIQUE_ID"]==id, "reef_gbrmpa_id"] = reef_spatial_data.loc[reef_spatial_data["UNIQUE_ID"]==id, "RME_GBRMPA_ID"].iloc[0]
 
@@ -179,8 +179,28 @@ def raw_rti(metrics_dict, metrics_df):
 
     return np.transpose(metrics_dict["RTI"], (1, 0))
 
+
+def find_representative_reef(iv_reefs, data_store):
+    """
+    Finds the intervention reef with greatest distance to port as an estimate for total cost of travel from port
+    for an outplanting intervention.
+
+    Parameters
+    ----------
+        iv_reefs : list
+            List of reef IDs intervened at for a particular intervention
+        data_store : dataframe
+            Storage dataframe for creating economics metric files
+    """
+    reef_distances = [(data_store.loc[data_store["reef_gbrmpa_id"]==reef,
+                                      ["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m
+                                      for reef in iv_reefs]
+    min_reef_idx = np.argmin(reef_distances)
+
+    return [iv_reefs[min_reef_idx], reef_distances[min_reef_idx]]
+
 def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
-                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci], max_dist = 25.0,
+                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci],
                                   economics_spatial_filepath='.//datasets//econ_spatial.csv',
                                   econ_storage_path=".//econ_outputs//"):
     """
@@ -253,13 +273,12 @@ def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=defaul
         # Setup structure for intervention key - links intervention ID and filename to cost model data
         id_key_df = scens_df_iv[["intervention id", "year", "rep", "number of corals"]]
         n_scens_id = id_key_df.shape[0]
-        id_key_df = id_key_df.loc[id_key_df.index.repeat(len(iv_reefs))]
-        id_key_df["intervention_reef_id"] = np.repeat(iv_reefs, n_scens_id)
         id_key_df["distance_to_port_NM"] = np.zeros((n_scens_id,))
 
         # Add distance to port data to save in intervention key
-        for reef in iv_reefs:
-            id_key_df.loc[id_key_df["intervention_reef_id"]==reef, "distance_to_port_NM"] = (data_store.loc[data_store["reef_gbrmpa_id"]==reef,["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m # Convert to nautical miles
+        rep_reef = find_representative_reef(iv_reefs, data_store)
+        id_key_df.loc[:, "distance_to_port_NM"] = rep_reef[1]
+        id_key_df.loc[:, "intervention_representative_reef_id"] = rep_reef[0]
 
         # Extract metrics for intervention and counterfactual scenarios
         metrics_data_iv = extract_metrics(results_data, iv_scens, nsims, uncertainty_dict=uncertainty_dict)
