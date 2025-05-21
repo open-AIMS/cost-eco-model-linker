@@ -214,7 +214,7 @@ def calculate_costs(ID_key, n_draws, deploy_model_filepath=config["deploy_model_
                         factors_df_dep["Cost"] = save_cost_dep
 
                 # Calculate all cost codes and add to dataframe
-                cost_df.loc[cost_df.year==int_yr,cost_df.columns[rep*N+2:rep*N+N+2]] = cost_types(factors_df_dep[["Cost","setupCost"]]+factors_df_prod[["Cost","setupCost"]], cont_p, N)
+                cost_df.loc[cost_df.year==int_yr, cost_df.columns[rep*N+2:rep*N+N+2]] = cost_types(factors_df_dep[["Cost","setupCost"]] + factors_df_prod[["Cost","setupCost"]], cont_p, N)
 
                 # Drop cost columns
                 factors_df_dep = factors_df_dep.drop(columns=["Cost","setupCost"])

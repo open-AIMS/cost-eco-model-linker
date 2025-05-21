@@ -3,7 +3,7 @@ Cost Models
 
 The cost modelling used to calculate intervention costs are Excel-based models developed by the RRAP Translation to
 Deployment team. The models to sample need to be downloaded and added to the `cost_models` folder to be accessible by
-the functions in this library. They also require two key configuration files to be placed in the `src`` folder.
+the functions in this library. They also require two key configuration files to be placed in the `src` folder.
 
 The file 'config.csv' is a configuration file for sampling the cost model parameters and describes the
 names, excel spreadsheet positions and ranges of parameters to sample from the cost models. An example of
@@ -15,10 +15,10 @@ this file is below:
 A full example of the 'config.csv' file is available in the examples folder. At minimum,
 the file must include the following columns:
 
-* `cost_type`` : the model type the parameter belows to (currently either `production` or `deployment`).
-* `sheet`` : the sheet name the parameter occurs on.
+* `cost_type` : the model type the parameter belows to (currently either `production` or `deployment`).
+* `sheet` : the sheet name the parameter occurs on.
 * `factor_names`` : a label for the factor.
-* `cell_row`, `cell_col``: the cell row and column reference for the parameter.
+* `cell_row`, `cell_col`: the cell row and column reference for the parameter.
 * `range_lower`, `range_upper` : the upper and lower bounds for sampling the parameter.
 * `is_cat` : a flag designating whether the parameter is categorical or not.
 
