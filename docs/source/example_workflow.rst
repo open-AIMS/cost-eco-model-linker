@@ -31,9 +31,6 @@ number of corals in each taxa and sizeclass in the rme resultset, but will be in
 Metric functions to include can be added using the optional parameter `metrics = [area_saved_above_thresh, area_weighted_rci]`.
 The defaults include area saved in and above good condition and area weighted RCI.
 
-The other optional parameter `max_dist` specifies how far apart reeks can be, in km, before a ship should return to
-port rather than travel to the reef in one trip.
-
 .. code-block:: python
 
     # Filepath to RME runs to process
@@ -42,7 +39,7 @@ port rather than travel to the reef in one trip.
     nsims = 3
     # Create metric datafiles for economics modelling and extract filename for intervention key
     int_keys_fn = prd.create_economics_metric_files(rme_files_path, nsims, ecol_uncert=1, shelt_uncert=0, expert_uncert=1,
-                                  metrics = [area_saved_above_thresh, area_weighted_rci], max_dist = 25.0,)
+                                  metrics = [area_saved_above_thresh, area_weighted_rci])
 
 
 After creating the metric summary files for CREAM, the cost files can be created by sampling the cost models
