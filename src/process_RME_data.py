@@ -6,6 +6,7 @@ import json
 
 # from reef_distances import find_representative_reefs
 from calculate_metrics import extract_metrics, default_uncertainty_dict
+from reef_distances import find_max_reef_distance
 
 def load_reef_data():
     """
@@ -112,7 +113,7 @@ def area_weighted_rti(metrics_dict, metrics_df):
     """
     return np.transpose(metrics_dict["RTI"]*np.array(metrics_df["total_area_nine_zones"]/np.sum(metrics_df["total_area_nine_zones"])),(1, 0))
 
-def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
+def rci(metrics_dict, metrics_df, rci_threshold=0.6):
     """
     Processes metrics dict into area at threshold RCI and above.
 
@@ -128,8 +129,21 @@ def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
     rci[rci >= rci_threshold] = 1
     rci[rci < rci_threshold]  = 0
 
-    return np.transpose(rci*np.array(metrics_df["total_area_nine_zones"]),
-                        (1, 0))
+    return np.transpose(rci*np.array(metrics_df["total_area_nine_zones"]),(1, 0))
+
+def coral_area_saved(metrics_dict, metrics_df):
+    """
+    Processes metrics dict into total area of coral cover in hectares.
+
+    Parameters
+    ----------
+        metrics_dict : dict
+            Dict containing key sampled metrics and the RCI
+        metrics_df : dataframe
+            Dataframe containing scenario summary dataframe
+    """
+    # Convert to hectares by dividaing by 100
+    return np.transpose(metrics_dict["total_cover"]*np.array(metrics_df["total_area_nine_zones"]/100),(1, 0))
 
 def rfi(metrics_dict, metrics_df, rfi_thresholds=[0.74, 29.91]):
     """
@@ -162,7 +176,6 @@ def raw_rci(metrics_dict, metrics_df):
         metrics_df : dataframe
             Dataframe containing scenario summary dataframe
     """
-
     return np.transpose(metrics_dict["RCI"], (1, 0))
 
 def raw_rti(metrics_dict, metrics_df):
@@ -179,28 +192,9 @@ def raw_rti(metrics_dict, metrics_df):
 
     return np.transpose(metrics_dict["RTI"], (1, 0))
 
-
-def find_representative_reef(iv_reefs, data_store):
-    """
-    Finds the intervention reef with greatest distance to port as an estimate for total cost of travel from port
-    for an outplanting intervention.
-
-    Parameters
-    ----------
-        iv_reefs : list
-            List of reef IDs intervened at for a particular intervention
-        data_store : dataframe
-            Storage dataframe for creating economics metric files
-    """
-    reef_distances = [(data_store.loc[data_store["reef_gbrmpa_id"]==reef,
-                                      ["minimum_distance_to_nearest_port_m"]].iloc[0]*0.00053996).minimum_distance_to_nearest_port_m
-                                      for reef in iv_reefs]
-    min_reef_idx = np.argmin(reef_distances)
-
-    return [iv_reefs[min_reef_idx], reef_distances[min_reef_idx]]
-
 def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=default_uncertainty_dict(),
-                                  metrics = [area_saved_rci, area_weighted_rti, raw_rci],
+                                  metrics = [rci, area_weighted_rti, raw_rci],
+                                  max_dist = 25.0,
                                   economics_spatial_filepath='.//datasets//econ_spatial.csv',
                                   econ_storage_path=".//econ_outputs//"):
     """
@@ -214,6 +208,10 @@ def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=defaul
             Number of simulations to sampling (including uncertainty types as specified)
         uncertainty_dict : dict
             Contains information on what uncertainty types to sample.
+        max_dist : float
+            Maximum distance between reefs within a "cluster". Total distance to port is calculated as distance
+            to port for closest reef cluster + distance between each additional further cluster where distance between
+            clusters is calculated as distance between the reefs furthest from port in each cluster.
         economics_spatial_filepath : string
             Filepath for economics spatial data (econ_spatial.csv)
         econ_storage_path : string
@@ -274,22 +272,28 @@ def create_economics_metric_files(rme_files_path, nsims, uncertainty_dict=defaul
         id_key_df = scens_df_iv[["intervention id", "year", "rep", "number of corals"]]
         n_scens_id = id_key_df.shape[0]
         id_key_df["distance_to_port_NM"] = np.zeros((n_scens_id,))
+        id_key_df["furthest_representative_reef"] = np.repeat("", (n_scens_id,))
+        id_key_df["closest_representative_reef"] = np.repeat("", (n_scens_id,))
+
 
         # Add distance to port data to save in intervention key
-        rep_reef = find_representative_reef(iv_reefs, data_store)
-        id_key_df.loc[:, "distance_to_port_NM"] = rep_reef[1]
-        id_key_df.loc[:, "intervention_representative_reef_id"] = rep_reef[0]
+        [rep_reefs_sort, total_dist] = find_max_reef_distance(reef_spatial_data, regions_data, iv_reefs, max_dist = max_dist)
+
+        # Store furthest and closest reefs in representative clsuters
+        id_key_df["furthest_representative_reef"] = rep_reefs_sort[-1]
+        id_key_df["closest_representative_reef"] = rep_reefs_sort[0]
+        id_key_df["distance_to_port_NM"] = total_dist
 
         # Extract metrics for intervention and counterfactual scenarios
         metrics_data_iv = extract_metrics(results_data, iv_scens, nsims, uncertainty_dict=uncertainty_dict)
         metrics_data_cf = extract_metrics(results_data, cf_scens, nsims, uncertainty_dict=uncertainty_dict)
-
+        breakpoint()
         for met_func in metrics:
             data_store[new_cols] = met_func(metrics_data_iv, data_store)
-            iv_filename = 'intervention'+str(iv_idx)+'_var_'+met_func.__name__+'_ecol0_intervention.csv'
+            iv_filename = str(iv_idx)+'_intervention_var_'+met_func.__name__+'_ecol0_intervention.csv'
             data_store.to_csv(econ_storage_path+iv_filename)
             data_store[new_cols] = met_func(metrics_data_cf, data_store)
-            cf_filename = 'counterfactual'+str(iv_idx)+'_var_'+met_func.__name__+'_ecol0_intervention.csv'
+            cf_filename = str(iv_idx)+'_counterfactual_var_'+met_func.__name__+'_ecol0_intervention.csv'
             data_store.to_csv(econ_storage_path+cf_filename)
 
         # Drop data columns to allow those for next intervention to be added

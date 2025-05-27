@@ -15,12 +15,12 @@ this file is below:
 A full example of the 'config.csv' file is available in the examples folder. At minimum,
 the file must include the following columns:
 
-* `cost_type` : the model type the parameter belows to (currently either `production` or `deployment`).
-* `sheet` : the sheet name the parameter occurs on.
-* `factor_names`` : a label for the factor.
-* `cell_row`, `cell_col`: the cell row and column reference for the parameter.
-* `range_lower`, `range_upper` : the upper and lower bounds for sampling the parameter.
-* `is_cat` : a flag designating whether the parameter is categorical or not.
+    * `cost_type` : the model type the parameter belows to (currently either `production` or `deployment`).
+    * `sheet` : the sheet name the parameter occurs on.
+    * `factor_names`` : a label for the factor.
+    * `cell_row`, `cell_col`: the cell row and column reference for the parameter.
+    * `range_lower`, `range_upper` : the upper and lower bounds for sampling the parameter.
+    * `is_cat` : a flag designating whether the parameter is categorical or not.
 
 At minimum, `config.csv` should include info for `setupCost` and `Cost` parameters for both the `production` and
 `deployment` models, parameters which are used to extract the setup (CAPEX) and operational (OPEX) cost
@@ -54,5 +54,10 @@ in the Excel models, but are dealt with in the functions :meth:`cost_calculation
 Calculating costs for interventions over multiple reefs
 -------------------------------------------------------
 The Excel-based cost models take as input a single value for distance to port to calculate deployment costs, so it is
-not specified how to deal with intervening on multiple reefs. This is currently dealt with by selecting the largest
-distance from port to represent the cost of travel to each of the deployment reefs.
+not specified how to deal with intervening on multiple reefs. For multiple intervention reefs for a single intervention,
+the total distance to port is calculated as follows:
+
+    * The intervention reefs are clustered into groups of reefs which are a maximum distance apart (set by `max_dist`).
+    * The initial distance to port is set as the maximum distance to port for reefs in the closest cluster to port.
+    * For the remaining clusters, distances are calculated between the furthest reefs from port in each cluster.
+    * The total distance travelled is then calculated as the initial distance to the closest cluster's furthest reef plus the remaining distances between the furthest reefs from port in each of the remaining clusters, travelling in order from closest cluster to port to furthest cluster from port.
