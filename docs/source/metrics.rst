@@ -5,8 +5,8 @@ The available metrics include Reef Condition Index  (RCI), the RTI, (a continuou
 Reef Fishing Index (RFI). There are also several versions of the RCI available, including an area weighted
 RCI and "area saved" which measures the total reef area in good or very good condition.
 
-RCI
----
+Raw RCI
+-------
 
 The RCI can be calculated using :meth:`process_RME_data.raw_rci`. This metric comprises 5 reef metrics,
     * Relative coral cover
@@ -40,13 +40,13 @@ The RFI or Reef Fishing Index, estimates the total fish biomas in kg km^2, based
 cover. This is based on digitisation of Fig 4A and 6B in Graham and Nash, 2012 `<https://doi.org/10.1007/s00338-012-0984-y>`_
 The RFI can be calculated using :meth:`process_RME_data.rfi`.
 
-Area saved RCI
---------------
-The area saved RCI looks at the total area of reef for which the condition is within the Good or Very Good categories.
+RCI
+---
+The RCI looks at the total area of reef for which the condition is within the Good or Very Good categories.
 Area saved RCI can be calculated using :meth:`process_RME_data.area_saved_rci`.
 
 Area weighted RCI
---------------
+-----------------
 The area weighted RCI weights the RCI by the total reef area relative to the total area of the set of reefs modelled
 (generally the 3000+ GBR reefs modelled in ReefModEngine.jl). Area weighted RCI can be calculated
 using :meth:`process_RME_data.area_weighted_rci`.
