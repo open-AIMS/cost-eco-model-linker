@@ -1,9 +1,9 @@
 ﻿cost_type,sheet,factor_names,cell_row,cell_col,range_lower,range_upper,is_cat
 production,Dashboard,setupCost,14,12,1000,1000000,FALSE
 production,Dashboard,Cost,16,12,1000,1000000,FALSE
-production,Dashboard,num_devices,5,5,1,100000000,TRUE
+production,Dashboard,num_devices,5,5,1000,1000000,TRUE
 production,Dashboard,species_no,10,5,19,23,TRUE
-production,Conversions,col_spawn_gam_bun,7,6,57600,70400,TRUE
+production,Conversions,col_spawn_gam_bun,7,6,22500,27500,TRUE
 production,Conversions,gam_bun_egg,8,7,10,14,TRUE
 production,Conversions,egg_embryo,9,8,0.7,0.9,FALSE
 production,Conversions,embryo_freeswim,10,9,0.7,0.9,FALSE
