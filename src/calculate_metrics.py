@@ -90,19 +90,19 @@ def indicator_params(result_set, scen_ids, uncertainty_dict=default_uncertainty_
     else:
         # If there is uncertainty from survey, draw each metric's thresholds randomly from pool of experts
         G = pd.read_csv('.//datasets//ExpertReefCondition_AllResults.csv')
-        G = np.array(G.loc[:, G.columns[2:]]) # Cut off first two columns, convert to array
+        G = np.array(G.loc[:, G.columns[[2, 3, 5 ,6, 7]]]) # Cut off first two columns, convert to array
 
         num_experts = int(G.shape[0]/5) # How many experts
-        experts = random.sample(range(num_experts), 6) # Random sample of 7 experts, for each of the 6 metrics
+        experts = random.sample(range(num_experts), 5) # Random sample of 7 experts, for each of the 5 metrics
 
         # Populate rci
         G_len = G.shape[0]
+
         rci_crit = np.array([G[experts[0]:G_len:num_experts, 0],
                         G[experts[1]:G_len:num_experts, 1],
                         G[experts[2]:G_len:num_experts, 2],
                         G[experts[3]:G_len:num_experts, 3],
-                        G[experts[4]:G_len:num_experts, 4],
-                        G[experts[5]:G_len:num_experts, 5]])
+                        G[experts[4]:G_len:num_experts, 4]])
 
     ## RTI LINEAR REGRESSION UNCERTAINTY
     if uncertainty_dict["rti_uncert"] == 0:
@@ -197,7 +197,7 @@ def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parame
     # corals[:, :, :, :, juv_sizes] = data.nb_coral_juv
     # corals[:, :, :, :, adol_sizes] = data.nb_coral_adol
     # corals[:, :, :, :, adult_sizes] = data.nb_coral_adult
-    nsizes = 3
+    # nsizes = 3
     # coral_numbers = np.zeros(nsims, nreefs, nyrs, ntaxa, nsizes)
 
     # if ngroups == 12:
@@ -237,11 +237,11 @@ def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parame
 
     # Start loop for crieria vs metric comparisons
     for curr_crit in range(ncrits):
-        rci_mask[:, :, :, 0] = total_cover >= rci_crit[curr_crit, 0]
-        rci_mask[:, :, :, 1] = shelterVolume >= rci_crit[curr_crit, 1]
-        rci_mask[:, :, :, 2] = coraljuv_relative >= rci_crit[curr_crit, 2]
-        rci_mask[:, :, :, 3] = COTSrel_complementary >= rci_crit[curr_crit, 3]
-        rci_mask[:, :, :, 4] = rubble_complementary >= rci_crit[curr_crit, 4]
+        rci_mask[:, :, :, 0] = total_cover >= rci_crit[0, curr_crit]
+        rci_mask[:, :, :, 1] = shelterVolume >= rci_crit[1, curr_crit]
+        rci_mask[:, :, :, 2] = coraljuv_relative >= rci_crit[2, curr_crit]
+        rci_mask[:, :, :, 3] = COTSrel_complementary >= rci_crit[3, curr_crit]
+        rci_mask[:, :, :, 4] = rubble_complementary >= rci_crit[4, curr_crit]
 
         curr_mask = np.sum(rci_mask, axis=3)/n_metrics
         curr_mask[curr_mask < criteria_threshold] = 0
@@ -249,12 +249,11 @@ def reef_condition_rme(results_data, scen_ids, ecol_uncert, sheltervolume_parame
 
         reefcondition += curr_mask
 
-    crit_thresh = np.cumsum(crit_val)
-    reefcondition[reefcondition >= crit_thresh[-4]] = 0.3
-    reefcondition[reefcondition >= crit_thresh[-3]] = 0.5
-    reefcondition[reefcondition >= crit_thresh[-2]] = 0.7
-    reefcondition[reefcondition >= crit_thresh[-1]] = 0.9
-    reefcondition[reefcondition == 0] = 0.1
+    reefcondition[reefcondition == sum(crit_val)] = 0.9
+    reefcondition[reefcondition == sum(crit_val[1:])] = 0.7
+    reefcondition[reefcondition == sum(crit_val[2:])] = 0.5
+    reefcondition[reefcondition == sum(crit_val[3:])] = 0.3
+    reefcondition[reefcondition == 0.0] = 0.1
 
     return {"total_cover": total_cover, "shelter_volume": shelterVolume, "coraljuv_relative": coraljuv_relative, "COTSrel_complementary": COTSrel_complementary, "rubble_complementary": rubble_complementary, "RCI" : reefcondition}
 

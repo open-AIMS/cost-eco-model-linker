@@ -112,7 +112,7 @@ def area_weighted_rti(metrics_dict, metrics_df):
     """
     return np.transpose(metrics_dict["RTI"]*np.array(metrics_df["total_area_nine_zones"]/np.sum(metrics_df["total_area_nine_zones"])),(1, 0))
 
-def area_saved_rci(metrics_dict, metrics_df, rci_threshold=0.6):
+def rci(metrics_dict, metrics_df, rci_threshold=0.6):
     """
     Processes metrics dict into area at threshold RCI and above.
 
