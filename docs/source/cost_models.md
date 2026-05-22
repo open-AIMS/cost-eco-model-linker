@@ -19,7 +19,7 @@ package. There is one file per model type, named `{version}_{type}_config.csv`:
 - `3.9.0_deploy_config.csv` (Coral Aquaculture Deployment)
 - `3.9.6_LM_config.csv` (Larval Maintenance)
 
-These files are located inside the `cost_eco_model_linker` package directory. It is not
+These files are located inside the `rrap_cl` package directory. It is not
 currently possible to supply alternative config files at runtime.
 
 An example of the production config file for the latest compatible version is below:
@@ -79,7 +79,7 @@ through consultation with the Translation to Deployment Team and sensitivity ana
 The Excel-based cost models give CAPEX and OPEX costs of the production and deployment
 stages of outplanting corals, for a particular input deployment volume, number of species,
 distance from port to the deployment reef, and other factors, primarily for the ReefMod
-Engine model. Further details are found in the [documentation](https://open-aims.github.io/cost-eco-model-linker/context/02_EcologicalModels.html#reefmod).
+Engine model. Further details are found in the [documentation](https://open-aims.github.io/rrap-cost-linker/context/02_EcologicalModels.html#reefmod).
 
 ## Cost model samples output file
 
@@ -164,9 +164,9 @@ The multiplier is computed by `cost_calculations.lm_opex_distance_multiplier()`.
 
 The LM model can be used through the following public functions:
 
-- `ceml.evaluate_lm_cost(workbook_path, scenarios_df, **factors)` evaluates the LM model
+- `cl.evaluate_lm_cost(workbook_path, scenarios_df, **factors)` evaluates the LM model
   over a year-by-year coral scenario DataFrame and applies the inventory model.
-- `ceml.run_lm_model(cost_model, nsims)` generates Sobol samples for the LM model and
+- `cl.run_lm_model(cost_model, nsims)` generates Sobol samples for the LM model and
   returns an SALib ProblemSpec with `cost_model_results` populated.
-- `ceml.sweep_lm(lm_model, sweep_param, search_range, lm_params)` evaluates the LM model
+- `cl.sweep_lm(lm_model, sweep_param, search_range, lm_params)` evaluates the LM model
   over a range of values for a single parameter.

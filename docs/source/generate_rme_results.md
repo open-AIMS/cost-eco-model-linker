@@ -3,7 +3,7 @@
 Simulation results from ReefModEngine.jl are currently used to generate the required inputs
 for economic modelling. An example of running a test set of scenarios is provided here, but more detail on running scenarios in ReefModEngine.jl is available in its [documentation](https://open-aims.github.io/ReefModEngine.jl/v1.4.1/getting_started).
 
-`cost-eco-model-linker` has been tested with version 1.0.43 of the RME.
+`rrap-cost-linker` has been tested with version 1.0.43 of the RME.
 
 ## Example running scenarios in ReefModEngine.jl
 
@@ -83,7 +83,7 @@ for (iv_yr_idx, iv_year) in enumerate(iv_years)
 end
 ```
 
-Note that the only intervention type the `cost-eco-model-linker` can currently calculate
+Note that the only intervention type the `rrap-cost-linker` can currently calculate
 costs for is outplanting. Other interventions, such as larval methods, will be later
 implemented, but require a separate cost model. Hence, for the current version,
 interventions should only be of `outplant` type, set using `set_outplant_deployment!`.

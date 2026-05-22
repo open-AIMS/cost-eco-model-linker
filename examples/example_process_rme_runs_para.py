@@ -1,4 +1,4 @@
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 import multiprocessing as mp
 
 
@@ -13,7 +13,7 @@ economics_spatial_filepath = ".//datasets//econ_spatial.csv"
 econ_storage_path = ".//econ_outputs//"
 
 # Create economics metrics input files, get number of batches needed to complete nsims over ncores
-int_keys_fn, nbatches = ceml.para_sample_econ(
+int_keys_fn, nbatches = cl.para_sample_econ(
     rme_files_path, nsims, economics_spatial_filepath, econ_storage_path, ncores=ncores
 )
 
@@ -36,7 +36,7 @@ for var in list(globals().keys()):
 if __name__ == "__main__":
     pool = mp.Pool(ncores)
     result = [
-        pool.apply(ceml.calculate_costs, args=(iter_id, int_keys_fn, nbatches))
+        pool.apply(cl.calculate_costs, args=(iter_id, int_keys_fn, nbatches))
         for iter_id in range(ncores)
     ]
     pool.close()

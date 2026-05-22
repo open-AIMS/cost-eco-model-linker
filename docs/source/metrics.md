@@ -57,7 +57,7 @@ reef area maintained.
 ## Uncertainty sampling
 
 Uncertainty sampling is controlled by the dictionary returned from
-`ceml.default_uncertainty_dict()`. The defaults are:
+`cl.default_uncertainty_dict()`. The defaults are:
 
 ```python
 {

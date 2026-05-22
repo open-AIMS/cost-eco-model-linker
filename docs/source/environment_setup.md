@@ -1,6 +1,6 @@
 # Environment Setup
 
-`cost-eco-model-linker` is not a registered Python package. To set up for local use,
+`rrap-cost-linker` is not a registered Python package. To set up for local use,
 clone the repository.
 
 Package environment and dependencies are managed with [`uv`](https://docs.astral.sh/uv/getting-started/installation/).
@@ -20,7 +20,7 @@ simply run:
 $ uv sync
 
 # This should change the initial prompt to:
-(cost-eco-model-linker) $
+(rrap-cost-linker) $
 ```
 
 ## Development setup
@@ -29,10 +29,10 @@ Assuming the current directory is the project root:
 
 ```shell
 # Add formatter and linter
-(cost-eco-model-linker) $ uv sync --group lint
+(rrap-cost-linker) $ uv sync --group lint
 
 # Add dev packages
-(cost-eco-model-linker) $ uv sync --group dev
+(rrap-cost-linker) $ uv sync --group dev
 ```
 
 In VS code, the corresponding virtual environment can be selected by selecting the interpreter in the bottom right of the screen:
@@ -43,9 +43,9 @@ And then selecting the virtual environment:
 
 <img src="./_static/figs/prod/select_environment.png" width="800">
 
-To use `cost-eco-model-linker`,
+To use `rrap-cost-linker`,
 
 Copies of the cost models and associated configuration must be had to use
-`cost-eco-model-linker`.
+`rrap-cost-linker`.
 
 See [cost_models](cost_models.md) for further details.

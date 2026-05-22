@@ -1,4 +1,4 @@
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 # Filepath to RME runs to process
 rme_files_path = "C:/users/dtan/data/exported_rme_results"
@@ -11,7 +11,7 @@ nsims = 10
 # 2. rfi logic
 # 3. Transparently save the 3-metric RCI as '_var_rci.parq' for downstream compatibility.
 
-ceml.evaluate(
+cl.evaluate(
     rme_files_path,
     nsims,
     "3.8.0_deploy_config.csv",

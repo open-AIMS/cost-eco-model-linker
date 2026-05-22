@@ -1,8 +1,8 @@
-# cost-eco-model-linker documentation
+# rrap-cost-linker documentation
 
 A Python library for generating input files for the [CREAM](https://github.com/gbrrestoration/CREAM) economics analysis suite, using result sets from [ReefModEngine.jl](https://github.com/open-AIMS/ReefModEngine.jl).
 
-The package repository is [here](https://github.com/open-AIMS/cost-eco-model-linker).
+The package repository is [here](https://github.com/open-AIMS/rrap-cost-linker).
 
 **Note: This package only works on Windows for now**
 

@@ -1,10 +1,10 @@
-# Cost-eco-model-linker
+# rrap-cost-linker
 
 A python library for generating input files for the CREAM economics analysis suite, using
 results from [ReefModEngine.jl](https://github.com/open-AIMS/ReefModEngine.jl) and sampling
 the intervention cost models.
 
-[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://open-aims.github.io/cost-eco-model-linker/)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://open-aims.github.io/rrap-cost-linker/)
 
 
 **Note: This package only works on Windows for now**
@@ -18,7 +18,7 @@ Once the repository is cloned, simply run:
 $ uv sync
 
 # This should change the initial prompt to:
-(cost-eco-model-linker) $
+(rrap-cost-linker) $
 ```
 
 ## Development setup
@@ -27,17 +27,17 @@ Assuming the current directory is the project root:
 
 ```shell
 # Add formatter and linter
-(cost-eco-model-linker) $ uv sync --group lint
+(rrap-cost-linker) $ uv sync --group lint
 
 # Add dev packages
-(cost-eco-model-linker) $ uv sync --group dev
+(rrap-cost-linker) $ uv sync --group dev
 ```
 
-If working on integrating `cost-eco-model-linker` with another package:
+If working on integrating `rrap-cost-linker` with another package:
 
 ```shell
 # Add this package for development
-$ uv pip install -e <path to cost-eco-model-linker repository>
+$ uv pip install -e <path to rrap-cost-linker repository>
 ```
 
 This project uses the Ruff python formatter.
@@ -53,7 +53,7 @@ $ uv sync
 ## Quick start
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 # Filepath to RME runs to process
 rme_files_path = "./path_to_RME_outputs"
@@ -66,14 +66,14 @@ output_path = "./results"
 # in RCI calcs)
 nsims = 10
 
-ceml.evaluate(rme_files_path, nsims, deployment_model, production_model, lm_model, output_path)
+cl.evaluate(rme_files_path, nsims, deployment_model, production_model, lm_model, output_path)
 
 # Alternatively, run the analyses in parallel
 nsims = 10
 ncores = 4
 
 if __name__ == "__main__":
-    ceml.evaluate(
+    cl.evaluate(
         rme_files_path,
         nsims,
         deployment_model,
@@ -94,7 +94,7 @@ The first controls the names of output sub-directories.
 In the quickstart example, note the call to:
 
 ```python
-ceml.evaluate(rme_files_path, nsims, deployment_model, production_model, lm_model, output_path)
+cl.evaluate(rme_files_path, nsims, deployment_model, production_model, lm_model, output_path)
 ```
 
 The last argument, `output_path`, indicates where outputs of the analyses will be written
@@ -124,7 +124,7 @@ cost model parameters. See the full documentation for details.
 
 ## Sampled metrics output files
 
-Cost-eco-model-linker generates sampled economics metric files, including the:
+rrap-cost-linker generates sampled economics metric files, including the:
 - Reef Condition Index
 - Reef Fishing Index and
 - Reef Tourism Index
@@ -138,9 +138,9 @@ Note that the implementation of the metrics are specific to ReefMod and ReefMod 
 
 ## Sampled costs output files
 
-Cost-eco-model-linker generates sampled cost output files for each of the interventions
+rrap-cost-linker generates sampled cost output files for each of the interventions
 modelled in a set of ReefModEngine.jl results. Currently the latest version of the cost
-models that Cost-eco-model-linker is compatible with are:
+models that rrap-cost-linker is compatible with are:
 
 - Coral Aquaculture Deployment: "3.9.0 CA Deployment Model.xlsx"
 - Coral Aquaculture Production: "3.9.1 CA Production Model.xlsx"
@@ -159,7 +159,7 @@ ecological modelling.**
 Generate API stubs:
 
 ```shell
-uv run sphinx-apidoc -o docs/source/api cost_eco_model_linker
+uv run sphinx-apidoc -o docs/source/api rrap_cl
 ```
 
 Build docs (from repository root):

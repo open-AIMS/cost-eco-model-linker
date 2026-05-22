@@ -1,4 +1,4 @@
-project = "cost-eco-model-linker"
+project = "rrap-cost-linker"
 author = "Rose Crocker"
 release = "0.0.1"
 
@@ -10,7 +10,7 @@ extensions = [
 ]
 
 autoapi_type = "python"
-autoapi_dirs = ["../../cost_eco_model_linker"]
+autoapi_dirs = ["../../rrap_cl"]
 autoapi_keep_files = True
 autoapi_options = [
     "members",

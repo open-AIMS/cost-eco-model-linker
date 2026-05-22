@@ -268,77 +268,6 @@ wheels = [
 ]
 
 [[package]]
-name = "cost-eco-model-linker"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "geopandas" },
-    { name = "multiprocess" },
-    { name = "netcdf4" },
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "pyarrow" },
-    { name = "python-dotenv" },
-    { name = "pywin32", marker = "sys_platform == 'win32'" },
-    { name = "pyyaml" },
-    { name = "salib" },
-    { name = "tqdm" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "furo" },
-    { name = "ipdb" },
-    { name = "ipython" },
-    { name = "linkify-it-py" },
-    { name = "myst-parser" },
-    { name = "py-spy" },
-    { name = "pytest" },
-    { name = "sphinx" },
-    { name = "sphinx-autoapi" },
-    { name = "sphinx-autobuild" },
-    { name = "sphinx-autodoc-typehints" },
-    { name = "sphinx-design" },
-    { name = "sphinx-rtd-theme" },
-]
-lint = [
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "geopandas", specifier = ">=1.0.1" },
-    { name = "multiprocess", specifier = ">=0.70.18" },
-    { name = "netcdf4", specifier = ">=1.7.2" },
-    { name = "numpy", specifier = ">=2.2.4" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pyarrow", specifier = ">=22.0.0" },
-    { name = "python-dotenv", specifier = ">=1.2.1" },
-    { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=310" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "salib", specifier = ">=1.5.2" },
-    { name = "tqdm", specifier = ">=4.67.3" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "furo", specifier = ">=2024.8.6" },
-    { name = "ipdb", specifier = ">=0.13.13" },
-    { name = "ipython", specifier = ">=9.6.0" },
-    { name = "linkify-it-py", specifier = ">=2.0.3" },
-    { name = "myst-parser", specifier = ">=2.0" },
-    { name = "py-spy", specifier = ">=0.4.1" },
-    { name = "pytest", specifier = ">=8.0" },
-    { name = "sphinx", specifier = ">=8.2.3" },
-    { name = "sphinx-autoapi", specifier = ">=3.6.0" },
-    { name = "sphinx-autobuild", specifier = ">=2025.8.25" },
-    { name = "sphinx-autodoc-typehints", specifier = ">=3.5.2" },
-    { name = "sphinx-design", specifier = ">=0.5.0" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
-]
-lint = [{ name = "ruff", specifier = ">=0.14.1" }]
-
-[[package]]
 name = "cycler"
 version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1397,6 +1326,77 @@ sdist = { url = "https://files.pythonhosted.org/packages/30/76/48fd56d17c5bdbdf6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/53/97/d2cbbaa10c9b826af0e10fdf836e1bf344d9f0abb873ebc34d1f49642d3f/roman_numerals_py-3.1.0-py3-none-any.whl", hash = "sha256:9da2ad2fb670bcf24e81070ceb3be72f6c11c440d73bd579fbeca1e9f330954c", size = 7742 },
 ]
+
+[[package]]
+name = "rrap-cost-linker"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "geopandas" },
+    { name = "multiprocess" },
+    { name = "netcdf4" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyarrow" },
+    { name = "python-dotenv" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
+    { name = "pyyaml" },
+    { name = "salib" },
+    { name = "tqdm" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "furo" },
+    { name = "ipdb" },
+    { name = "ipython" },
+    { name = "linkify-it-py" },
+    { name = "myst-parser" },
+    { name = "py-spy" },
+    { name = "pytest" },
+    { name = "sphinx" },
+    { name = "sphinx-autoapi" },
+    { name = "sphinx-autobuild" },
+    { name = "sphinx-autodoc-typehints" },
+    { name = "sphinx-design" },
+    { name = "sphinx-rtd-theme" },
+]
+lint = [
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "geopandas", specifier = ">=1.0.1" },
+    { name = "multiprocess", specifier = ">=0.70.18" },
+    { name = "netcdf4", specifier = ">=1.7.2" },
+    { name = "numpy", specifier = ">=2.2.4" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pyarrow", specifier = ">=22.0.0" },
+    { name = "python-dotenv", specifier = ">=1.2.1" },
+    { name = "pywin32", marker = "sys_platform == 'win32'", specifier = ">=310" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "salib", specifier = ">=1.5.2" },
+    { name = "tqdm", specifier = ">=4.67.3" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "furo", specifier = ">=2024.8.6" },
+    { name = "ipdb", specifier = ">=0.13.13" },
+    { name = "ipython", specifier = ">=9.6.0" },
+    { name = "linkify-it-py", specifier = ">=2.0.3" },
+    { name = "myst-parser", specifier = ">=2.0" },
+    { name = "py-spy", specifier = ">=0.4.1" },
+    { name = "pytest", specifier = ">=8.0" },
+    { name = "sphinx", specifier = ">=8.2.3" },
+    { name = "sphinx-autoapi", specifier = ">=3.6.0" },
+    { name = "sphinx-autobuild", specifier = ">=2025.8.25" },
+    { name = "sphinx-autodoc-typehints", specifier = ">=3.5.2" },
+    { name = "sphinx-design", specifier = ">=0.5.0" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+]
+lint = [{ name = "ruff", specifier = ">=0.14.1" }]
 
 [[package]]
 name = "ruff"

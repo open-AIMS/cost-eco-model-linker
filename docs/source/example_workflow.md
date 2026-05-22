@@ -1,7 +1,7 @@
 # Example workflow
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 # Filepath to RME runs to process
 rme_files_path = "./data/eco_linker_example"
@@ -9,7 +9,7 @@ deployment_model = "./3.9.0 CA Deployment Model.xlsx"
 production_model = "./3.9.1 CA Production Model.xlsx"
 lm_model = "./3.9.6 LM Model.xlsx"
 output_path = "./results"
-unc_config = ceml.default_uncertainty_dict()
+unc_config = cl.default_uncertainty_dict()
 
 # Change the entries in `unc_config` if needed
 # unc_config["rti_uncert"] = 0
@@ -17,7 +17,7 @@ unc_config = ceml.default_uncertainty_dict()
 # Number of sims for metrics sampling (default includes ecological and expert uncertainty in RCI calcs)
 nsims = 10
 
-ceml.evaluate(
+cl.evaluate(
     rme_files_path,
     nsims,
     deployment_model,
@@ -35,7 +35,7 @@ nsims = 10
 ncores = 4
 
 if __name__ == "__main__":
-    ceml.evaluate(
+    cl.evaluate(
         rme_files_path,
         nsims,
         deployment_model,
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 ## Sensitivity analysis
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 prod_cost_model = "./models/3.9.1 CA Production Model.xlsx"
 deploy_cost_model = "./models/3.9.0 CA Deployment Model.xlsx"
@@ -60,12 +60,12 @@ N = 2**7
 
 # Samples model and returns an SALib problem specification with results under the
 # `cost_model_results` key.
-prod_sp = ceml.run_production_model(prod_cost_model, N)
-deploy_sp = ceml.run_deployment_model(deploy_cost_model, N)
+prod_sp = cl.run_production_model(prod_cost_model, N)
+deploy_sp = cl.run_deployment_model(deploy_cost_model, N)
 
 # Conduct and save sensitivity analysis results
-ceml.extract_sa_results(prod_sp, "./figs/prod/")
-ceml.extract_sa_results(deploy_sp, "./figs/deploy/")
+cl.extract_sa_results(prod_sp, "./figs/prod/")
+cl.extract_sa_results(deploy_sp, "./figs/deploy/")
 ```
 
 The above will generate a set of figures (for production or deployment costs).
@@ -87,15 +87,15 @@ for any factor you want to override; all other factors default to the values cur
 in the spreadsheet. Both return `(capex, opex)`.
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 production_model = "./models/3.9.1 CA Production Model.xlsx"
 deployment_model = "./models/3.9.0 CA Deployment Model.xlsx"
 
-capex, opex = ceml.evaluate_production_cost(production_model, num_1yoec=1_000_000)
+capex, opex = cl.evaluate_production_cost(production_model, num_1yoec=1_000_000)
 print(capex + opex)
 
-capex, opex = ceml.evaluate_deployment_cost(deployment_model, reef=2, distance_from_port=40)
+capex, opex = cl.evaluate_deployment_cost(deployment_model, reef=2, distance_from_port=40)
 print(capex + opex)
 ```
 
@@ -106,7 +106,7 @@ Columns not present default to the values in the spreadsheet.
 
 ```python
 import pandas as pd
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 production_model = "./models/3.9.1 CA Production Model.xlsx"
 
@@ -117,11 +117,11 @@ samples = pd.DataFrame({
 })
 
 # Serial
-results = ceml.run_cost_model(production_model, samples)
+results = cl.run_cost_model(production_model, samples)
 
 # Parallel — each worker opens its own temporary copy of the workbook
 if __name__ == "__main__":
-    results = ceml.run_cost_model(production_model, samples, nprocs=4)
+    results = cl.run_cost_model(production_model, samples, nprocs=4)
 
 #    num_1yoec  coral_yield_1YOEC  species_no      capex       opex  total_cost
 # 0     500000                0.3          20  2696740.0   910485.3   3607225.3
@@ -140,14 +140,14 @@ models automatically.
 
 ```python
 import numpy as np
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 production_model = "./models/3.9.1 CA Production Model.xlsx"
 deployment_model = "./models/3.9.0 CA Deployment Model.xlsx"
 lm_model = "./models/3.9.6 LM Model.xlsx"
 
 # Sweep num_1yoec across production and deployment, all other factors at spreadsheet defaults
-df = ceml.sweep_ca(
+df = cl.sweep_ca(
     production_model,
     deployment_model,
     sweep_param="num_1yoec",
@@ -155,7 +155,7 @@ df = ceml.sweep_ca(
 )
 
 # Fix additional production factors while sweeping coral_yield_1YOEC
-df = ceml.sweep_ca(
+df = cl.sweep_ca(
     production_model,
     deployment_model,
     sweep_param="coral_yield_1YOEC",
@@ -168,7 +168,7 @@ df = ceml.sweep_ca(
 # 2           0.5   3394200.0  1265323.000  1320560.0  7.870774e+06  1.385086e+07
 
 # Sweep a parameter in the LM model
-lm_df = ceml.sweep_lm(
+lm_df = cl.sweep_lm(
     lm_model,
     sweep_param="distance_from_port",
     search_range=range(10, 70, 10),
@@ -296,7 +296,7 @@ this is hardcoded in.
 
 ## Additional evaluate() parameters
 
-Several parameters of `ceml.evaluate()` are useful for specific workflows but are not
+Several parameters of `cl.evaluate()` are useful for specific workflows but are not
 shown in the basic example above.
 
 `active_models` accepts a Python set controlling which intervention types are costed. Pass
@@ -323,13 +323,13 @@ runs and is not typically set manually.
 
 ## Cost exploration workflow
 
-`ceml.run_cost_exploration()` runs three scenarios back-to-back — combined (CA + LM),
+`cl.run_cost_exploration()` runs three scenarios back-to-back — combined (CA + LM),
 CA-only, and LM-only — against a single RME template, filtering the simulation to a
 specified assessment year. This is useful for comparing the relative cost contributions of
 each intervention type.
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 rme_template_path = "./data/rme_template"
 deployment_model = "./models/3.9.0 CA Deployment Model.xlsx"
@@ -337,7 +337,7 @@ production_model = "./models/3.9.1 CA Production Model.xlsx"
 lm_model = "./models/3.9.6 LM Model.xlsx"
 results_dir = "./exploration_results"
 
-results = ceml.run_cost_exploration(
+results = cl.run_cost_exploration(
     rme_template_path,
     nsims=50,
     deploy_model_fn=deployment_model,
@@ -352,12 +352,12 @@ results = ceml.run_cost_exploration(
 # each mapping to a list of output file paths.
 ```
 
-After running, `ceml.summarise_mc_results()` reads the cost overview CSVs from each
+After running, `cl.summarise_mc_results()` reads the cost overview CSVs from each
 scenario subdirectory and computes per-year quantiles, returning a nested dict and writing
 a `mc_summary.json` file to the results directory.
 
 ```python
-summary = ceml.summarise_mc_results(
+summary = cl.summarise_mc_results(
     results_dir,
     quantiles=[0.05, 0.25, 0.5, 0.75, 0.95],
     scenario_id=1,
@@ -366,27 +366,27 @@ summary = ceml.summarise_mc_results(
 
 ## Joint cost model sampling
 
-`ceml.sample_joint_factors()` generates a single Sobol sample over the combined factor
+`cl.sample_joint_factors()` generates a single Sobol sample over the combined factor
 space of all three models. Shared factors (e.g., `coral_yield_1YOEC`, `num_1yoec`) are
 sampled once and assigned consistently across models, avoiding inconsistencies that would
 arise from sampling each model independently.
 
-`ceml.run_joint_cost_models()` evaluates all three models against the joint samples and
+`cl.run_joint_cost_models()` evaluates all three models against the joint samples and
 returns per-model result DataFrames.
 
 ```python
-import cost_eco_model_linker as ceml
+import rrap_cl as cl
 
 production_model = "./models/3.9.1 CA Production Model.xlsx"
 deployment_model = "./models/3.9.0 CA Deployment Model.xlsx"
 lm_model = "./models/3.9.6 LM Model.xlsx"
 
-prod_samples, dep_samples, lm_samples, combined_sp = ceml.sample_joint_factors(
+prod_samples, dep_samples, lm_samples, combined_sp = cl.sample_joint_factors(
     nsims=512,
     seed=42,
 )
 
-prod_results, dep_results, lm_results = ceml.run_joint_cost_models(
+prod_results, dep_results, lm_results = cl.run_joint_cost_models(
     production_model,
     deployment_model,
     lm_model,
