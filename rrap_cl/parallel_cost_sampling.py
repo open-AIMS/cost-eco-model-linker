@@ -20,6 +20,7 @@ def para_sample_econ(
     uncertainty_dict=None,
     metrics=None,
     coral_only=False,
+    intervention_year_offset: int = 1,
 ):
     """
     Run economics metrics data creation files so that corresponding cost data can be sampled in parallel.
@@ -40,6 +41,9 @@ def para_sample_econ(
         Contains information on what uncertainty types to sample.
     coral_only : bool, default=False
         If True, only use coral-related metrics (RCI_3 and RFI), excluding COTS and Rubble.
+    intervention_year_offset : int, default=1
+        Number of years to subtract from the RME intervention year when labelling
+        costs in outputs.  See ``create_economics_metric_files`` for full details.
     """
     nbatches = math.ceil(nsims / ncores)
 
@@ -77,6 +81,7 @@ def para_sample_econ(
         metrics=metrics,
         uncertainty_dict=uncertainty_dict,
         economics_spatial_filepath=economics_spatial_filepath,
+        intervention_year_offset=intervention_year_offset,
     )
 
     # Post process metrics to be in single file
@@ -154,9 +159,11 @@ def post_process_metrics(
         for fn in file_list:
             os.remove(path_join(cost_dir, fn))
 
+
 def get_draw_id(p_id, rep_id, draw_id, nsims, ndraws_per_worker):
 
     return int((rep_id - 1) * nsims + p_id * ndraws_per_worker + (draw_id))
+
 
 def post_process_costs(result, nsims):
     """
@@ -176,7 +183,6 @@ def post_process_costs(result, nsims):
     global_draw = 0  # NEVER resets
 
     for iv_id in range(n_iv):
-
         # Reference frame
         base_df = pd.read_csv(result[0][iv_id])
         save_fn = result[0][iv_id].split("id")[0][:-6] + ".csv"
@@ -192,9 +198,7 @@ def post_process_costs(result, nsims):
 
             # Enforce identical rows
             if not df[["year", "component"]].equals(base_cols):
-                raise ValueError(
-                    f"Row mismatch in proc {proc_id}, rep {iv_id}"
-                )
+                raise ValueError(f"Row mismatch in proc {proc_id}, rep {iv_id}")
 
             draw_df = df.iloc[:, 2:]
             cols = draw_df.columns
@@ -202,10 +206,11 @@ def post_process_costs(result, nsims):
 
             # convert to lists
             draws = extracted[0].tolist()
-            reps  = extracted[1].tolist()
-            draw_names = [f"draw{get_draw_id(
-                proc_id, r, d, nsims, ndraws_per_worker
-            )}" for (d, r) in zip(draws, reps)]
+            reps = extracted[1].tolist()
+            draw_names = [
+                f"draw{get_draw_id(proc_id, r, d, nsims, ndraws_per_worker)}"
+                for (d, r) in zip(draws, reps)
+            ]
 
             n_local = draw_df.shape[1]
 
@@ -223,9 +228,7 @@ def post_process_costs(result, nsims):
         fixed_cols = ["year", "component"]
 
         draw_cols = (
-            out_df
-            .columns
-            .drop(fixed_cols)
+            out_df.columns.drop(fixed_cols)
             .to_series()
             .str.extract(r"draw(\d+)")
             .astype(int)[0]

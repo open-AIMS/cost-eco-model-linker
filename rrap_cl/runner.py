@@ -125,6 +125,7 @@ def evaluate(
     distance_override_NM: float = None,
     coral_only: bool = False,
     seed: int = None,
+    intervention_year_offset: int = 1,
 ) -> list[str]:
     """
     Evaluate costs of intervention scenarios.
@@ -167,6 +168,13 @@ def evaluate(
         If True, only use coral-related metrics (RCI_3 and RFI), excluding COTS and Rubble.
     seed : int, optional
         Random seed for reproducibility.
+    intervention_year_offset : int, default=1
+        Number of years to subtract from the RME intervention year when labelling
+        costs in outputs.  ReefMod Engine records the year corals first become
+        *detectable*; the actual production and deployment work takes place one
+        year earlier.  The default of 1 therefore produces cost outputs whose
+        year columns reflect the calendar year costs were actually incurred.
+        Pass 0 to keep the raw RME year unchanged.
 
     Returns
     -------
@@ -263,6 +271,7 @@ def evaluate(
             uncertainty_dict=uncertainty_dict,
             costs_only=costs_only,
             seed=seed,
+            intervention_year_offset=intervention_year_offset,
         )
         from tqdm import tqdm
 
@@ -310,6 +319,7 @@ def evaluate(
             costs_only=costs_only,
             distance_override_NM=distance_override_NM,
             seed=seed,
+            intervention_year_offset=intervention_year_offset,
         )
         from tqdm import tqdm
 
@@ -355,6 +365,7 @@ def parallel_evaluate(
     metrics: list = None,
     uncertainty_dict: dict = None,
     coral_only: bool = False,
+    intervention_year_offset: int = 1,
 ):
     stores = setup_dirs(results_dir)
 
@@ -389,6 +400,7 @@ def parallel_evaluate(
         metrics=metrics,
         uncertainty_dict=uncertainty_dict,
         coral_only=coral_only,
+        intervention_year_offset=intervention_year_offset,
     )
 
     nbatches_per_core = int(np.ceil(nsims / ncores))
@@ -543,8 +555,11 @@ def _prepare_mc_scenario(
     rme_template_path : str
         Path to the template RME output directory.
     assessment_year : int
-        The second (target) deployment year.  Rows in
-        ``iv_yearly_scenarios.csv`` beyond this year are dropped.
+        The year corals from the second deployment first become detectable
+        in RME (i.e. the RME detection year, not the cost year).  Rows in
+        ``iv_yearly_scenarios.csv`` beyond this year are dropped.  Cost
+        outputs will be labelled ``assessment_year - intervention_year_offset``
+        (default: one year earlier than this value).
     reefset_CA : list, optional
         Reef IDs to assign to ``reefset_CA`` (e.g. ``["18-096"]``).
         If ``None``, the template value is kept unchanged.
@@ -645,6 +660,7 @@ def run_cost_exploration(
     metrics: list = None,
     uncertainty_dict: dict = None,
     nprocs=1,
+    intervention_year_offset: int = 1,
 ) -> dict:
     """
     Explore cost uncertainty across intervention scenarios.
@@ -672,9 +688,17 @@ def run_cost_exploration(
         Root directory for outputs.  Three subdirectories are created:
         ``combined/``, ``ca_only/``, and ``lm_only/``.
     assessment_year : int
-        The second (target) deployment year.  Year 1 (first deployment year)
-        is always included; rows beyond ``assessment_year`` are dropped from
-        the scenario before running.
+        The year corals from the second deployment first become detectable
+        in RME (i.e. the RME detection year, not the cost year).  Year 1
+        (first deployment) is always included; rows beyond ``assessment_year``
+        are dropped from the scenario before running.  Cost outputs will be
+        labelled ``assessment_year - intervention_year_offset`` (default: one
+        year earlier than this value).
+    intervention_year_offset : int, default=1
+        Passed through to ``evaluate()``.  See that function's docstring for
+        full details.  The default of 1 subtracts one year from RME detection
+        years so that cost outputs reflect the calendar year in which
+        production and deployment actually occurred.
     reefset_CA : list, optional
         Reef IDs to assign to ``reefset_CA`` (e.g. ``["18-096"]``).
         If ``None``, the template value from ``scenario_info.json`` is used.
@@ -726,6 +750,7 @@ def run_cost_exploration(
                 costs_only=True,
                 nprocs=nprocs,
                 sample_scale=True,
+                intervention_year_offset=intervention_year_offset,
             )
             results[label] = result_paths
     finally:

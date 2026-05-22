@@ -381,6 +381,7 @@ def create_economics_metric_files(
     costs_only=False,
     distance_override_NM: float = None,
     seed: int = None,
+    intervention_year_offset: int = 1,
 ) -> tuple[str, list[str]]:
     """
     Main function for creating metric file summaries for input to economics modelling.
@@ -411,6 +412,14 @@ def create_economics_metric_files(
         the config best-point distance should take precedence over computed reef distances.
     seed : int, optional
         Random seed for reproducibility.
+    intervention_year_offset : int, default=1
+        Number of years to subtract from the RME intervention year when labelling
+        costs in the output ID key.  ReefMod Engine records the year in which
+        outplanted corals first become *detectable*; the actual production and
+        deployment work takes place one year earlier.  The default of 1 therefore
+        produces cost outputs whose ``intervention_years`` column reflects the
+        calendar year in which costs were actually incurred.  Pass 0 to keep the
+        raw RME year unchanged.
 
     Returns
     -------
@@ -482,7 +491,9 @@ def create_economics_metric_files(
         # Setup filenames for outputs
         ecol_uncert = uncertainty_dict["ecol_uncert"]
         expert_uncert = uncertainty_dict["expert_uncert"]
-        base_met_filename = f"_uncertainty_ecol{ecol_uncert}_indicator{expert_uncert}_var_"
+        base_met_filename = (
+            f"_uncertainty_ecol{ecol_uncert}_indicator{expert_uncert}_var_"
+        )
 
         run_id = os.path.basename(rme_files_path) + "_run"
         id_filename = path_join(
@@ -498,7 +509,9 @@ def create_economics_metric_files(
         from tqdm import tqdm
 
         # Process each intervention
-        for iv_idx, iv_id in enumerate(tqdm(intervention_ids, desc="Calculating metrics")):
+        for iv_idx, iv_id in enumerate(
+            tqdm(intervention_ids, desc="Calculating metrics")
+        ):
             # Filter scenarios for this intervention
             scens_df_iv = scens_df[scens_df["intervention id"] == iv_id].copy()
             original_n_reps = scens_df_iv["rep"].max()
@@ -515,13 +528,17 @@ def create_economics_metric_files(
 
             # Get intervention reefs
             reefset_names = scens_df_iv_costs["reefset"].unique()
-            iv_reefs = sum([iv_dict[reefset_name] for reefset_name in reefset_names], [])
+            iv_reefs = sum(
+                [iv_dict[reefset_name] for reefset_name in reefset_names], []
+            )
 
             # Calculate relative year (0 on first intervention year)
             intervention_start = scens_df_iv_costs["year"].min()
             intervention_start_idx = np.where(years == intervention_start)[0][0]
             data_store = base_data_store.copy()
-            data_store["year_relative"] = data_store["year_absolute"] - intervention_start
+            data_store["year_relative"] = (
+                data_store["year_absolute"] - intervention_start
+            )
 
             # Get scenario indices for this intervention and its counterfactual
             scen_id_start = iv_idx * original_n_reps
@@ -557,7 +574,9 @@ def create_economics_metric_files(
                 id_key_df.loc[rs_mask, "port_name"] = rs_port_name
                 id_key_df.loc[rs_mask, "reef"] = rs_reef_name
                 id_key_df.loc[rs_mask, "distance_to_port_NM"] = (
-                    distance_override_NM if distance_override_NM is not None else rs_distance_NM
+                    distance_override_NM
+                    if distance_override_NM is not None
+                    else rs_distance_NM
                 )
 
             # Process batches
@@ -689,6 +708,12 @@ def create_economics_metric_files(
                     "year": "intervention_years",
                 }
             )
+
+            # Shift intervention years back by offset: RME records the year corals
+            # become detectable, but production/deployment occurs one year earlier.
+            # The ecological indexing (intervention_start) is left on the original
+            # RME year so that results.nc lookups remain correct.
+            id_key_df["intervention_years"] -= intervention_year_offset
 
             id_key_dfs.append(id_key_df)
             metric_filepaths.append(batch_files)
