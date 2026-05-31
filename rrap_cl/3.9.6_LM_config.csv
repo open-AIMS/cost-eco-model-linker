@@ -1,7 +1,7 @@
 cost_type,sheet,cell_pos,factor_names,variable_type,SA_range_lower,SA_range_upper,best_point_value,range_lower,range_upper,discrete_values,UNC_distribution,is_cat,comments
 lm,Dashboard,J7,capex,output,0,0,0,1,2,,unif,FALSE,dummy lower and upper bounds
 lm,Dashboard,J6,opex,output,0,0,0,1,2,,unif,FALSE,dummy lower and upper bounds
-lm,Dashboard,D6,larval release pools,integer,1,1796,180,30,1796,,unif,TRUE,integer multiple of 5569 (# 1YOC per pool); 180 ~ 1M 1YOC; 1796 ~ 10M 1YOC
+lm,Dashboard,D6,larval release pools,integer,1,1796,180,30,1796,,unif,TRUE,"integer multiple of 5569 (# 1YOC per pool); 180 ~ 1M 1YOC; 1796 ~ 10M 1YOC; Not really a sampled parameter, used for configuration only"
 lm,Dashboard,J12,yield_per_pool,integer,4000,50000,5569,5000,20000,,unif,TRUE,Distribution should really be gamma with peak at 5500
 lm,Logistics,I44,seedboxes_per_pool,integer,2,12,6,5,8,,unif,TRUE,
 lm,Logistics,I64,pools_per_tender,float,0.25,10,4,0.5,10,,unif,FALSE,continuous variable
