@@ -65,6 +65,12 @@ def load_result_files(rme_files_path: str):
 
     # intervention scenarios table
     scens_df = pd.read_csv(path_join(rme_files_path, "iv_yearly_scenarios.csv"))
+    # Normalise type labels: third-party data may use "CAD" / "MC" instead of
+    # the canonical "outplant" / "lm" expected by the cost model.
+    _type_aliases = {"cad": "outplant", "mc": "lm"}
+    scens_df["type"] = (
+        scens_df["type"].str.lower().replace(_type_aliases)
+    )
     results_data = nc.Dataset(path_join(rme_files_path, "results.nc"))  # Metric results
 
     # Load struct with interventions data
