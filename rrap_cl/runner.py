@@ -126,6 +126,7 @@ def evaluate(
     coral_only: bool = False,
     seed: int = None,
     intervention_year_offset: int = 1,
+    additional_deploy_opex: float = 0.0,
 ) -> list[str]:
     """
     Evaluate costs of intervention scenarios.
@@ -175,6 +176,11 @@ def evaluate(
         year earlier.  The default of 1 therefore produces cost outputs whose
         year columns reflect the calendar year costs were actually incurred.
         Pass 0 to keep the raw RME year unchanged.
+    additional_deploy_opex : float, optional
+        A fixed amount (in dollars) added to deployment OPEX for each
+        deployment year of each scenario.  Applied identically across
+        all draws (i.e. it is a deterministic external cost, not sampled).
+        Standard contingency is also applied to this amount.  Defaults to 0.0.
 
     Returns
     -------
@@ -296,6 +302,7 @@ def evaluate(
             active_models=active_models,
             sample_scale=sample_scale,
             seed=seed,
+            additional_deploy_opex=additional_deploy_opex,
         )
         with mp.Pool(nprocs, initializer=_pool_initializer) as pool:
             result = pool.map(wrapper, range(nprocs))
@@ -341,6 +348,7 @@ def evaluate(
             active_models=active_models,
             sample_scale=sample_scale,
             seed=seed,
+            additional_deploy_opex=additional_deploy_opex,
         )
         post_process_costs([result_paths], nsims)
         scen_ids = [

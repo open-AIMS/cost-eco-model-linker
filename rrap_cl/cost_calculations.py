@@ -308,7 +308,7 @@ def sample_cost_model(nsims, seed: int = None):
         )
     else:
         # Sample production model factors using Latin Hypercube Sampling
-        # This provides exactly `nsims` unique, space-filling samples without the 
+        # This provides exactly `nsims` unique, space-filling samples without the
         # identical-row artifacts caused by truncating Saltelli/Sobol matrices.
         sp_prod.sample_latin(nsims, seed=seed)
         factors_df_prod = pd.DataFrame(
@@ -1142,6 +1142,7 @@ def calculate_costs(
     sample_scale: bool = False,
     session_reset_interval: int = _RESET_INTERVAL,
     seed: int = None,
+    additional_deploy_opex: float = 0.0,
 ):
     """
     Sample costs for a set of interventions specified in ID_key, sampling nsims.
@@ -1178,6 +1179,12 @@ def calculate_costs(
         growth.  Defaults to ``_RESET_INTERVAL`` (50).
     seed : int, optional
         Random seed for reproducibility.
+    additional_deploy_opex : float, optional
+        A fixed amount (in dollars) added to deployment OPEX for each
+        deployment year.  Applied identically across all draws (i.e. it
+        is a deterministic external cost, not sampled).  Standard contingency is
+        also applied to this amount via the normal ``cost_types`` calculation.
+        Defaults to 0.0 (no additional cost).
     """
     # Derive unique seed per worker for reproducibility.
     # Use a default base seed if none is provided.
@@ -1398,6 +1405,11 @@ def calculate_costs(
                             acc.prod_total_capex[yr_idx] = total_prod_capex
                             acc.deploy_total_capex[yr_idx] = total_deploy_capex
                             total_yr_capex = total_prod_capex + total_deploy_capex
+
+                            # Add fixed external deployment OPEX to each deployment year.
+                            if additional_deploy_opex != 0.0:
+                                yr_opex = yr_opex + additional_deploy_opex
+                                acc.deploy_opex[yr_idx] += additional_deploy_opex
 
                             cost_sum = np.column_stack([total_yr_capex, yr_opex])
                             component_costs = cost_types(cost_sum, cont_p, nsims)
