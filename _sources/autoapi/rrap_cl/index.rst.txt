@@ -1,0 +1,23 @@
+rrap_cl
+=======
+
+.. py:module:: rrap_cl
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/rrap_cl/calculate_metrics/index
+   /autoapi/rrap_cl/cost_calculations/index
+   /autoapi/rrap_cl/handlers/index
+   /autoapi/rrap_cl/parallel_cost_sampling/index
+   /autoapi/rrap_cl/process_RME_data/index
+   /autoapi/rrap_cl/reef_distances/index
+   /autoapi/rrap_cl/runner/index
+   /autoapi/rrap_cl/sampling/index
+   /autoapi/rrap_cl/setup_results/index
+
+

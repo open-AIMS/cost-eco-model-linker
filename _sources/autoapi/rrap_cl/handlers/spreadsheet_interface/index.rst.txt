@@ -1,0 +1,141 @@
+rrap_cl.handlers.spreadsheet_interface
+======================================
+
+.. py:module:: rrap_cl.handlers.spreadsheet_interface
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.handlers.spreadsheet_interface.get_industry_codes
+   rrap_cl.handlers.spreadsheet_interface.find_table
+   rrap_cl.handlers.spreadsheet_interface.find_cost_table
+   rrap_cl.handlers.spreadsheet_interface.create_eia_template
+   rrap_cl.handlers.spreadsheet_interface.find_or_fill_row
+   rrap_cl.handlers.spreadsheet_interface.fill_industry_costs
+   rrap_cl.handlers.spreadsheet_interface.fill_opex
+   rrap_cl.handlers.spreadsheet_interface.fill_capex
+   rrap_cl.handlers.spreadsheet_interface.create_lm_eia_template
+   rrap_cl.handlers.spreadsheet_interface.fill_lm_EIA_info
+   rrap_cl.handlers.spreadsheet_interface.fill_EIA_info
+
+
+Module Contents
+---------------
+
+.. py:function:: get_industry_codes(ws: win32com.client.CDispatch)
+
+   Retrieve industry classification codes found in the given worksheet.
+
+   :param ws: Excel WorkSheet object
+   :type ws: win32com.client.CDispatch
+
+   :rtype: List of industry classification codes
+
+
+.. py:function:: find_table(ws: win32com.client.CDispatch, first_header: str) -> pandas.DataFrame
+
+   Identifies and retrieves table in a given worksheet identified by its first header.
+   Selects contiguous data regions.
+
+   Note: Drops NA rows.
+
+   :param ws: Excel worksheet
+   :type ws: w32client.CDispatch
+   :param first_header: Header of first column
+   :type first_header: str
+
+
+.. py:function:: find_cost_table(ws: win32com.client.CDispatch) -> pandas.DataFrame
+
+   Identifies and retrieves cost table based on initial header "Amount".
+   Selects contiguous data regions.
+
+   Note: Drops NA rows.
+
+   :param ws: Excel worksheet
+   :type ws: w32client.CDispatch
+
+
+.. py:function:: create_eia_template(wb)
+
+.. py:function:: find_or_fill_row(eia_template, it, year, intervention, port, expense_type)
+
+   Attempts to identify the matching row. If none found, adds a new row.
+   Returns the row ID (of the existing row, or the new row).
+
+
+.. py:function:: fill_industry_costs(eia_template, next_idx, cost_df, ind_codes, unique_ind_codes)
+
+   Single-pass update of industry costs in EIA template. Accumulates into existing
+   values.
+
+
+.. py:function:: fill_opex(it, _, year, intervention, port, eia_template, wb)
+
+   Fill OPEX industry costs and labour, summing all relevant costs for each industry code.
+
+   Rows whose Type is 'passive labour' or 'active labour' are accumulated into
+   the 'labour' column regardless of their industry classification code.
+   All other rows are accumulated into their respective industry code columns.
+
+
+.. py:function:: fill_capex(it, _, year, intervention, port, eia_template, wb)
+
+   Fill CAPEX industry costs, summing all relevant costs for each industry code.
+
+
+.. py:function:: create_lm_eia_template(wb) -> pandas.DataFrame
+
+   Create an EIA template for the LM cost model.
+
+   The LM workbook has a single ``"Expenses"`` sheet (no CAPEX/OPEX split).
+   Industry classification codes are read from that sheet and used as columns,
+   with a trailing ``"labour"`` column for labour costs.
+
+
+.. py:function:: fill_lm_EIA_info(wb, intervention: str, it: int, iv_start_year: int, year: int, port: str, eia_template: pandas.DataFrame) -> pandas.DataFrame
+
+   Fill an LM EIA template with cost data from the ``"Expenses"`` sheet.
+
+   All costs are treated as a single expense type (``"Expenses"``).
+   Rows whose ``"Type"`` is ``"Labour"`` accumulate into the ``"labour"``
+   column; all other rows accumulate into their industry code column using
+   the ``"Total cost"`` column.
+
+   :param wb: Open LM cost model workbook.
+   :param intervention: Intervention type code, e.g. ``"LM"``.
+   :type intervention: str
+   :param it: ReefMod Engine Iteration ID.
+   :type it: int
+   :param iv_start_year: Year interventions begin.
+   :type iv_start_year: int
+   :param year: Simulation year.
+   :type year: int
+   :param port: Port / location label.
+   :type port: str
+   :param eia_template: Template to fill (as created by ``create_lm_eia_template``).
+   :type eia_template: pd.DataFrame
+
+
+.. py:function:: fill_EIA_info(wb, intervention: str, it: int, iv_start_year: int, year: int, port: str, eia_template: pandas.DataFrame)
+
+   Fill EIA template with cost data for a single workbook and intervention type.
+
+   :param wb: Cost model workbook (production or deployment).
+   :param intervention: Intervention type code, e.g. ``"CA-P"`` (production) or ``"CA-D"`` (deployment).
+   :type intervention: str
+   :param it: ReefMod Engine Iteration ID.
+   :type it: int
+   :param iv_start_year: Year interventions begin.
+   :type iv_start_year: int
+   :param year: Simulation year.
+   :type year: int
+   :param port: Port where deployments launched from.
+   :type port: str
+   :param eia_template: Template to fill.
+   :type eia_template: pd.DataFrame
+
+

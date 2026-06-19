@@ -1,0 +1,1269 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Example workflow" href="example_workflow.html"><link rel="prev" title="Metrics" href="metrics.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Output file format - rrap-cost-linker 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">rrap-cost-linker 0.0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">rrap-cost-linker 0.0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment_setup.html">Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost_models.html">Cost Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generate_rme_results.html">Generating scenarios in ReefModEngine.jl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Output file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_workflow.html">Example workflow</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="context/Context.html">Context</a><input aria-label="Toggle navigation of Context" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="context/01_CostModels.html">1. Cost Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/02_EcologicalModels.html">2. Ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/03_LinkingCostAndEcologicalModels.html">3.	Linking cost and ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/04_AppendicesAndAcknowledgements.html">Appendix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/04_AppendicesAndAcknowledgements.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/rrap_cl/index.html">rrap_cl</a><input aria-label="Toggle navigation of rrap_cl" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/calculate_metrics/index.html">rrap_cl.calculate_metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/cost_calculations/index.html">rrap_cl.cost_calculations</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/rrap_cl/handlers/index.html">rrap_cl.handlers</a><input aria-label="Toggle navigation of rrap_cl.handlers" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/rrap_cl/handlers/excel_handlers/index.html">rrap_cl.handlers.excel_handlers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/rrap_cl/handlers/spreadsheet_interface/index.html">rrap_cl.handlers.spreadsheet_interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/parallel_cost_sampling/index.html">rrap_cl.parallel_cost_sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/process_RME_data/index.html">rrap_cl.process_RME_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/reef_distances/index.html">rrap_cl.reef_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/runner/index.html">rrap_cl.runner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/sampling/index.html">rrap_cl.sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/setup_results/index.html">rrap_cl.setup_results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/output_file_format.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="output-file-format">
+<h1>Output file format<a class="headerlink" href="#output-file-format" title="Link to this heading">¶</a></h1>
+<p>The functions in this library generate the following output file types for the economics modelling:</p>
+<ul class="simple">
+<li><p>Metrics summary files (saved by default under <code class="docutils literal notranslate"><span class="pre">Indicators/rci</span></code>, <code class="docutils literal notranslate"><span class="pre">Indicators/rfi</span></code>, and <code class="docutils literal notranslate"><span class="pre">Indicators/rti</span></code> as parquet files)</p></li>
+<li><p>A cost overview file (saved by default in <code class="docutils literal notranslate"><span class="pre">Costs</span></code> as a CSV file)</p></li>
+<li><p>EIA cost breakdown files (saved in <code class="docutils literal notranslate"><span class="pre">Costs</span></code> as CSV files)</p></li>
+<li><p>Cost parameter files (saved in <code class="docutils literal notranslate"><span class="pre">Costs</span></code> as CSV files)</p></li>
+<li><p>An intervention key file (saved in <code class="docutils literal notranslate"><span class="pre">intervention_keys</span></code> as a CSV file)</p></li>
+</ul>
+<p>By default, for a single unique intervention ID (a unique intervention scenario run for any
+number of reps and any number of climate models), the above examples would generate 6
+metric output files. This would include separate files for each of the 3 metrics (the RCI,
+RTI and RFI), and separate files for counterfactual and intervention scenarios. The cost
+sampling output would be a single file, as cost sampling is only done for intervention
+scenarios and all cost metrics are included in a single file.</p>
+<section id="economics-metric-summary-file-structure">
+<h2>Economics metric summary file structure<a class="headerlink" href="#economics-metric-summary-file-structure" title="Link to this heading">¶</a></h2>
+<p>The following is an example metrics summary file generated to input to <code class="docutils literal notranslate"><span class="pre">CREAM</span></code>, for the RCI metric:</p>
+<div class="table-wrapper docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Part of an example economics metrics input file</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>year_absolute</p></th>
+<th class="head"><p>year_relative</p></th>
+<th class="head"><p>Reef_ID</p></th>
+<th class="head"><p>reef_name</p></th>
+<th class="head"><p>not_zoned</p></th>
+<th class="head"><p>buffer</p></th>
+<th class="head"><p>commonwealth_island_GBRMPA</p></th>
+<th class="head"><p>conservation_park</p></th>
+<th class="head"><p>general_use</p></th>
+<th class="head"><p>habitat_protection</p></th>
+<th class="head"><p>marine_national_park</p></th>
+<th class="head"><p>preservation</p></th>
+<th class="head"><p>scientific_research</p></th>
+<th class="head"><p>total_area_nine_zones</p></th>
+<th class="head"><p>minimum_distance_to_nearest_port_m</p></th>
+<th class="head"><p>GBRMPA_management_area</p></th>
+<th class="head"><p>subregion</p></th>
+<th class="head"><p>qfish</p></th>
+<th class="head"><p>region_code</p></th>
+<th class="head"><p>sim_1</p></th>
+<th class="head"><p>sim_2</p></th>
+<th class="head"><p>sim_3</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2007</p></td>
+<td><p>-18</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2008</p></td>
+<td><p>-17</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2009</p></td>
+<td><p>-16</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2010</p></td>
+<td><p>-15</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2011</p></td>
+<td><p>-14</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2012</p></td>
+<td><p>-13</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2013</p></td>
+<td><p>-12</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2014</p></td>
+<td><p>-11</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-even"><td><p>2015</p></td>
+<td><p>-10</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-odd"><td><p>2016</p></td>
+<td><p>-9</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2017</p></td>
+<td><p>-8</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-odd"><td><p>2018</p></td>
+<td><p>-7</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-even"><td><p>2019</p></td>
+<td><p>-6</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-odd"><td><p>2020</p></td>
+<td><p>-5</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2021</p></td>
+<td><p>-4</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2022</p></td>
+<td><p>-3</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2023</p></td>
+<td><p>-2</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0.83553108</p></td>
+</tr>
+<tr class="row-odd"><td><p>2024</p></td>
+<td><p>-1</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>2026</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-even"><td><p>2027</p></td>
+<td><p>2</p></td>
+<td><p>1</p></td>
+<td><p>U/N Reef</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0.83553108</p></td>
+<td><p>46596.97332</p></td>
+<td><p>Far Northern Management Area</p></td>
+<td><p>Torres Strait</p></td>
+<td><p>59057</p></td>
+<td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A file such as the above is generated for <em>each intervention run</em>, i.e., for each unique
+combination of deployment volume, enhancement level, deployment years etc. run in
+<code class="docutils literal notranslate"><span class="pre">ReefModEngine.jl</span></code>, for each metric and for each counterfactual and intervention.</p>
+<p>The outputs in the columns <code class="docutils literal notranslate"><span class="pre">sim_1</span></code>, <code class="docutils literal notranslate"><span class="pre">sim_2</span></code> etc. represent different draws for the same
+intervention scenario, which can be across multiple climate models. Each draw may sample
+ecological, expert and other forms of uncertainty depending on the uncertainty settings
+when the files were generated (see <code class="docutils literal notranslate"><span class="pre">calculate_metrics.default_uncertainty_dict()</span></code>).
+The other columns summarize key information such year, year relative to the first
+intervention year, reef name, distance to port, reef area in different management zones and
+other spatial information.</p>
+<p>Each intervention is identifiable through an intervention ID captured in the file name. For
+a set of runs, an intervention ID key file (as a CSV) is also generated and saved in
+<code class="docutils literal notranslate"><span class="pre">intervention_keys</span></code>, which links key intervention parameters to an intervention ID.
+An example intervention ID key file is included below. Note that the number of 1YO corals
+reported is the actual number of outplants recorded in <code class="docutils literal notranslate"><span class="pre">ReefModEngine.jl</span></code>, so it varies
+slightly between climate model replicates due to slightly different space available for
+coral growth in different climate scenarios. The input value for deployment volume will not
+vary for the same intervention ID.</p>
+<p>The functions here treat the varying number of outplants for a single intervention as a
+stochastic sample for that intervention in the cost model sampling. The intervention ID key
+files are necessary to assure scenario sampling IDs match between the cost and metrics
+samples, but also for future reference as a record of the intervention scenarios which were
+run for a particular set of economics input files.</p>
+<div class="table-wrapper docutils container" id="id2">
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Part of an example intervention ID key file</span><a class="headerlink" href="#id2" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"></th>
+<th class="head"><p>ID</p></th>
+<th class="head"><p>results_filename</p></th>
+<th class="head"><p>intervention_years</p></th>
+<th class="head"><p>number_of_1YO_corals</p></th>
+<th class="head"><p>port_id</p></th>
+<th class="head"><p>distance_to_port_NM</p></th>
+<th class="head"><p>intervention_reef_id</p></th>
+<th class="head"><p>number_of_species</p></th>
+<th class="head"><p>start_year</p></th>
+<th class="head"><p>end_year</p></th>
+<th class="head"><p>rep</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2027</p></td>
+<td><p>823235.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2027</p></td>
+<td><p>882794.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2028</p></td>
+<td><p>140294.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2028</p></td>
+<td><p>209118.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2029</p></td>
+<td><p>133676.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>1</p></td>
+<td><p>intervention1_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2029</p></td>
+<td><p>119779.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2027</p></td>
+<td><p>833162.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2027</p></td>
+<td><p>825221.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2028</p></td>
+<td><p>101912.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2028</p></td>
+<td><p>138309.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2029</p></td>
+<td><p>95294.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p>2</p></td>
+<td><p>intervention2_metric_name_ecol0_intervention.csv</p></td>
+<td><p>2029</p></td>
+<td><p>93309.0</p></td>
+<td><p>1</p></td>
+<td><p>25.9326612742256</p></td>
+<td><p>16-071</p></td>
+<td><p>6</p></td>
+<td><p>2025</p></td>
+<td><p>2099</p></td>
+<td><p>2.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost-summary-file-structure">
+<h2>Cost summary file structure<a class="headerlink" href="#cost-summary-file-structure" title="Link to this heading">¶</a></h2>
+<p>The cost files generated have the structure shown in the example below. The <code class="docutils literal notranslate"><span class="pre">component</span></code> column refers to 11 key cost codes:</p>
+<ol class="arabic simple">
+<li><p>CAPEX - sum of production and deployment cost</p></li>
+<li><p>Contingency CAPEX - % of CAPEX</p></li>
+<li><p>OPEX - sum of production and deployment cost</p></li>
+<li><p>Sustaining capital OPEX - set to zero for now (assumed to be included in OPEX through contract)</p></li>
+<li><p>Contingency OPEX - % of OPEX</p></li>
+<li><p>Vessel fuel - only relevant if volunteer vessels are used - set to zero for now</p></li>
+<li><p>CAPEX-monitoring - set to zero (assumed no monitoring cost)</p></li>
+<li><p>Contingency CAPEX-monitoring - % of CAPEX-monitoring</p></li>
+<li><p>OPEX-monitoring - set to zero (assumed no monitoring cost)</p></li>
+<li><p>Sustaining capital OPEX-monitoring - set to zero (assumed no monitoring cost)</p></li>
+<li><p>Contingency OPEX-monitoring - % of OPEX-monitoring</p></li>
+</ol>
+<p>Each of the columns <code class="docutils literal notranslate"><span class="pre">draw1</span></code>, <code class="docutils literal notranslate"><span class="pre">draw2</span></code> etc refer to unique samples drawn from the cost models for a particular
+intervention scenario by varying key cost model parameters (specified in <code class="docutils literal notranslate"><span class="pre">config.csv</span></code>). The cost files and
+metric summary files are linked by their intervention ID, as described in the intervention ID key file generated
+when the metric summary files are produced. Cost files are only generated for the intervention scenarios, as counterfactual
+scenario will have zero cost, so for a given unique intervention ID, one cost file is generated.</p>
+<div class="table-wrapper docutils container" id="id3">
+<table class="docutils align-default" id="id3">
+<caption><span class="caption-text">Part of an example cost output file</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>year</p></th>
+<th class="head"><p>component</p></th>
+<th class="head"><p>draw1</p></th>
+<th class="head"><p>draw2</p></th>
+<th class="head"><p>draw3</p></th>
+<th class="head"><p>…</p></th>
+<th class="head"><p>draw5000</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>1</p></td>
+<td><p>200000</p></td>
+<td><p>300000</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025</p></td>
+<td><p>2</p></td>
+<td><p>400000</p></td>
+<td><p>200000</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>3</p></td>
+<td><p>500000</p></td>
+<td><p>100000</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025</p></td>
+<td><p>4</p></td>
+<td><p>300000</p></td>
+<td><p>300000</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>5</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025</p></td>
+<td><p>6</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>7</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025</p></td>
+<td><p>8</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>9</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2025</p></td>
+<td><p>10</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2025</p></td>
+<td><p>11</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2026</p></td>
+<td><p>1</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-even"><td><p>2026</p></td>
+<td><p>2</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>2026</p></td>
+<td><p>3</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="cost-overview-file-structure">
+<h2>Cost overview file structure<a class="headerlink" href="#cost-overview-file-structure" title="Link to this heading">¶</a></h2>
+<p>For each unique intervention scenario, a cost overview file named
+<code class="docutils literal notranslate"><span class="pre">ID{scen}_cost_overview.csv</span></code> is written to the <code class="docutils literal notranslate"><span class="pre">Costs</span></code> directory. This file contains one
+row per combination of intervention year, ecological replicate, and cost model draw. The
+columns record the number of devices and 1YO corals deployed, the raw production and
+deployment CAPEX and OPEX, the LM CAPEX, the LM OPEX before and after applying the
+distance multiplier, and subtotals and totals for CAPEX and OPEX across all model
+components. These files are the primary source for per-draw uncertainty quantification of
+intervention costs.</p>
+</section>
+<section id="eia-output-files">
+<h2>EIA output files<a class="headerlink" href="#eia-output-files" title="Link to this heading">¶</a></h2>
+<p>For each unique intervention scenario, three EIA files are written per cost model type
+(production, deployment, and LM), named <code class="docutils literal notranslate"><span class="pre">EIA_{id}_{model}_{variant}.csv</span></code>. The three
+variants are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">raw</span></code> records the cost broken down by ANZSIC industry code for the last cost model draw.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">proportional</span></code> records each industry code’s share as a proportion of total CAPEX for the
+last draw.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaled</span></code> multiplies the proportional shares by the model’s total post-inventory CAPEX,
+providing cost-weighted industry code values.</p></li>
+</ul>
+<p>EIA files reflect only the last cost model draw and are intended for auditing the industry
+cost structure, not for uncertainty propagation. Per-draw totals are available in the cost
+overview files.</p>
+</section>
+<section id="cost-parameter-files">
+<h2>Cost parameter files<a class="headerlink" href="#cost-parameter-files" title="Link to this heading">¶</a></h2>
+<p>For each replicate of each intervention scenario, a cost parameter file named
+<code class="docutils literal notranslate"><span class="pre">ID{id}_rep{rep}_cost_params_{model}_pid{pid}.csv</span></code> is written to the <code class="docutils literal notranslate"><span class="pre">Costs</span></code> directory.
+This file records the sampled factor values used for that replicate. The
+<code class="docutils literal notranslate"><span class="pre">distance_from_port</span></code> value recorded is taken from the first reefset of the first
+intervention year and serves as a representative value; in multi-reefset scenarios,
+per-reefset distances are applied during evaluation but are not separately logged.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="example_workflow.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Example workflow</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="metrics.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Metrics</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Output file format</a><ul>
+<li><a class="reference internal" href="#economics-metric-summary-file-structure">Economics metric summary file structure</a></li>
+<li><a class="reference internal" href="#cost-summary-file-structure">Cost summary file structure</a></li>
+<li><a class="reference internal" href="#cost-overview-file-structure">Cost overview file structure</a></li>
+<li><a class="reference internal" href="#eia-output-files">EIA output files</a></li>
+<li><a class="reference internal" href="#cost-parameter-files">Cost parameter files</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

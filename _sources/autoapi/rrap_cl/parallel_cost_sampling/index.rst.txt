@@ -1,0 +1,84 @@
+rrap_cl.parallel_cost_sampling
+==============================
+
+.. py:module:: rrap_cl.parallel_cost_sampling
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   rrap_cl.parallel_cost_sampling.THIS_DIR
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.parallel_cost_sampling.para_sample_econ
+   rrap_cl.parallel_cost_sampling.post_process_metrics
+   rrap_cl.parallel_cost_sampling.get_draw_id
+   rrap_cl.parallel_cost_sampling.post_process_costs
+
+
+Module Contents
+---------------
+
+.. py:data:: THIS_DIR
+
+.. py:function:: para_sample_econ(rme_files_path: str, nsims: int, stores: rrap_cl.setup_results.OutputStores, ncores=5, uncertainty_dict=None, metrics=None, coral_only=False, intervention_year_offset: int = 1)
+
+   Run economics metrics data creation files so that corresponding cost data can be sampled in parallel.
+   Saves ID key files so that these are available for all cores while sampling cost models in parallel.
+   Also saves scenario references so that parallel samples process the correct scenario sims.
+
+   :param rme_files_path: String giving the path to resultset folder.
+   :type rme_files_path: string
+   :param nsims: Number of simulations to sampling (including uncertainty types as specified)
+   :type nsims: int
+   :param stores: Data class holding output file paths where economic metric files will be stored.
+   :type stores: OutputStores
+   :param ncores: Number of cores to sample cost models over.
+   :type ncores: int
+   :param uncertainty_dict: Contains information on what uncertainty types to sample.
+   :type uncertainty_dict: dict
+   :param coral_only: If True, only use coral-related metrics (RCI_3 and RFI), excluding COTS and Rubble.
+   :type coral_only: bool, default=False
+   :param intervention_year_offset: Number of years to subtract from the RME intervention year when labelling
+                                    costs in outputs.  See ``create_economics_metric_files`` for full details.
+   :type intervention_year_offset: int, default=1
+
+
+.. py:function:: post_process_metrics(stores: rrap_cl.setup_results.OutputStores, metric_filepaths: list[str], metrics: list, nsims: int)
+
+   When running multiple cores for cost sampling, metrics calculations are also broken into batches
+   to avoid memory issues when creating large metrics datacubes (have shape nsims*nyears*nreefs)
+
+   Writes metric results NOT as a "large metrics datacubes" but as a flat CSV.
+
+   :param stores: Data class defining output directories
+   :type stores: OutputStore
+   :param metric_filepaths: List of all filepaths where metrics are saved.
+   :type metric_filepaths: list{string}
+   :param metrics: List of metric functions which were calculated.
+   :type metrics: list{function}
+   :param nsims: Total number of simulations runs
+   :type nsims: int
+
+   :rtype: None
+
+
+.. py:function:: get_draw_id(p_id, rep_id, draw_id, nsims, ndraws_per_worker)
+
+.. py:function:: post_process_costs(result, nsims)
+
+   Combine parallel cost outputs into a single file per rep,
+   with draw numbering global across reps and processes.
+
+   Global ordering:
+       rep0: proc0 → proc1 → ...
+       rep1: proc0 → proc1 → ...
+
+

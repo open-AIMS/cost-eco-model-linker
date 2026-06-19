@@ -1,0 +1,789 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="next" title="rrap_cl.sampling" href="../sampling/index.html"><link rel="prev" title="rrap_cl.reef_distances" href="../reef_distances/index.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>rrap_cl.runner - rrap-cost-linker 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">rrap-cost-linker 0.0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">rrap-cost-linker 0.0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../environment_setup.html">Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cost_models.html">Cost Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../generate_rme_results.html">Generating scenarios in ReefModEngine.jl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../output_file_format.html">Output file format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example_workflow.html">Example workflow</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../context/Context.html">Context</a><input aria-label="Toggle navigation of Context" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../context/01_CostModels.html">1. Cost Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../context/02_EcologicalModels.html">2. Ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../context/03_LinkingCostAndEcologicalModels.html">3.	Linking cost and ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../context/04_AppendicesAndAcknowledgements.html">Appendix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../context/04_AppendicesAndAcknowledgements.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">rrap_cl</a><input aria-label="Toggle navigation of rrap_cl" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../calculate_metrics/index.html">rrap_cl.calculate_metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cost_calculations/index.html">rrap_cl.cost_calculations</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../handlers/index.html">rrap_cl.handlers</a><input aria-label="Toggle navigation of rrap_cl.handlers" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../handlers/excel_handlers/index.html">rrap_cl.handlers.excel_handlers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../handlers/spreadsheet_interface/index.html">rrap_cl.handlers.spreadsheet_interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../parallel_cost_sampling/index.html">rrap_cl.parallel_cost_sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../process_RME_data/index.html">rrap_cl.process_RME_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reef_distances/index.html">rrap_cl.reef_distances</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">rrap_cl.runner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sampling/index.html">rrap_cl.sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../setup_results/index.html">rrap_cl.setup_results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../_sources/autoapi/rrap_cl/runner/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-rrap_cl.runner">
+<span id="rrap-cl-runner"></span><h1>rrap_cl.runner<a class="headerlink" href="#module-rrap_cl.runner" title="Link to this heading">¶</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.SEMVER_RE" title="rrap_cl.runner.SEMVER_RE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SEMVER_RE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.evaluate" title="rrap_cl.runner.evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate</span></code></a>(→ list[str])</p></td>
+<td><p>Evaluate costs of intervention scenarios.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.parallel_evaluate" title="rrap_cl.runner.parallel_evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel_evaluate</span></code></a>(rme_files_path, nsims, ncores, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.run_cost_exploration" title="rrap_cl.runner.run_cost_exploration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_cost_exploration</span></code></a>(→ dict)</p></td>
+<td><p>Explore cost uncertainty across intervention scenarios.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.summarise_mc_results" title="rrap_cl.runner.summarise_mc_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">summarise_mc_results</span></code></a>(→ dict)</p></td>
+<td><p>Summarise Monte Carlo cost exploration results produced by <code class="docutils literal notranslate"><span class="pre">run_cost_exploration</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.evaluate_production_cost" title="rrap_cl.runner.evaluate_production_cost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_production_cost</span></code></a>(→ tuple[float, float])</p></td>
+<td><p>Wrapper that converts factor kwargs into the format expected by</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.evaluate_deployment_cost" title="rrap_cl.runner.evaluate_deployment_cost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_deployment_cost</span></code></a>(→ tuple[float, float])</p></td>
+<td><p>Wrapper that converts factor kwargs into the format expected by</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.evaluate_lm_cost" title="rrap_cl.runner.evaluate_lm_cost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_lm_cost</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Evaluate the LM cost model over a year-by-year coral scenario and apply</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.run_cost_model" title="rrap_cl.runner.run_cost_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_cost_model</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Evaluate a cost model over a set of parameter combinations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.sample_joint_factors" title="rrap_cl.runner.sample_joint_factors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_joint_factors</span></code></a>(→ tuple[pandas.DataFrame, ...)</p></td>
+<td><p>Generate Sobol' samples over the combined factor space of all three models</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.run_joint_cost_models" title="rrap_cl.runner.run_joint_cost_models"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_joint_cost_models</span></code></a>(→ tuple[pandas.DataFrame, ...)</p></td>
+<td><p>Run production, deployment, and LM cost models against jointly-sampled parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#rrap_cl.runner.sweep_ca" title="rrap_cl.runner.sweep_ca"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sweep_ca</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Sweep a single parameter across the CA production and deployment models.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#rrap_cl.runner.sweep_lm" title="rrap_cl.runner.sweep_lm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sweep_lm</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Sweep a single parameter across the LM cost model.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="rrap_cl.runner.SEMVER_RE">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">SEMVER_RE</span></span><a class="headerlink" href="#rrap_cl.runner.SEMVER_RE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.evaluate">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rme_files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsims</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nprocs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">costs_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_override_NM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coral_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervention_year_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_deploy_opex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#rrap_cl.runner.evaluate" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate costs of intervention scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rme_files_path</strong> (<em>str</em>) – Path to ReefMod Engine results.</p></li>
+<li><p><strong>nsims</strong> (<em>int</em>) – Number of simulations to evaluate.</p></li>
+<li><p><strong>deploy_model_fn</strong> (<em>str</em>) – Path to deployment spreadsheet model, including filename but excluding file extension.</p></li>
+<li><p><strong>prod_model_fn</strong> (<em>str</em>) – Path to production spreadsheet model, including filename but excluding file extension.</p></li>
+<li><p><strong>results_dir</strong> (<em>str</em>) – Path to directory for storing results.</p></li>
+<li><p><strong>lm_model_fn</strong> (<em>str</em>) – Path to LM spreadsheet model, including filename but excluding file extension.</p></li>
+<li><p><strong>metrics</strong> (<em>list</em><em>, </em><em>optional</em>) – List of metrics to calculate. Default is None.</p></li>
+<li><p><strong>uncertainty_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary specifying uncertainty parameters. Default is None.</p></li>
+<li><p><strong>active_models</strong> (<em>set</em><em>, </em><em>optional</em>) – Intervention types to include in cost calculations.  Valid values are
+<code class="docutils literal notranslate"><span class="pre">&quot;outplant&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;lm&quot;</span></code>.  Defaults to both when <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+Pass <code class="docutils literal notranslate"><span class="pre">{&quot;outplant&quot;}</span></code> for CA-only or <code class="docutils literal notranslate"><span class="pre">{&quot;lm&quot;}</span></code> for LM-only scenarios.</p></li>
+<li><p><strong>nprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of parallel worker processes for cost sampling.  Each worker
+receives <code class="docutils literal notranslate"><span class="pre">ceil(nsims</span> <span class="pre">/</span> <span class="pre">nprocs)</span></code> draws.  Defaults to 1 (serial).</p></li>
+<li><p><strong>costs_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – When <code class="docutils literal notranslate"><span class="pre">True</span></code>, skips post-processing of ecological metric files.
+Use this when only cost outputs are needed (e.g. in
+<code class="docutils literal notranslate"><span class="pre">run_cost_exploration</span></code>).  Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>distance_override_NM</strong> (<em>float</em><em>, </em><em>optional</em>) – When set, replaces the geographic port-distance calculation with this
+fixed value (nautical miles) for all reefsets.  Useful for best-guess
+explorer runs where the config best-point distance (e.g. 27 NM North,
+54 NM Centre) should be used instead of the computed reef distance.</p></li>
+<li><p><strong>coral_only</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True, only use coral-related metrics (RCI_3 and RFI), excluding COTS and Rubble.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.</p></li>
+<li><p><strong>intervention_year_offset</strong> (<em>int</em><em>, </em><em>default=1</em>) – Number of years to subtract from the RME intervention year when labelling
+costs in outputs.  ReefMod Engine records the year corals first become
+<em>detectable</em>; the actual production and deployment work takes place one
+year earlier.  The default of 1 therefore produces cost outputs whose
+year columns reflect the calendar year costs were actually incurred.
+Pass 0 to keep the raw RME year unchanged.</p></li>
+<li><p><strong>additional_deploy_opex</strong> (<em>float</em><em>, </em><em>optional</em>) – A fixed amount (in dollars) added to deployment OPEX for each
+deployment year of each scenario.  Applied identically across
+all draws (i.e. it is a deterministic external cost, not sampled).
+Standard contingency is also applied to this amount.  Defaults to 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Paths to result files.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.parallel_evaluate">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">parallel_evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rme_files_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsims</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coral_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervention_year_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rrap_cl.runner.parallel_evaluate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.run_cost_exploration">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">run_cost_exploration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rme_template_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsims</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_model_fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assessment_year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reefset_CA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reefset_LM</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uncertainty_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nprocs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intervention_year_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#rrap_cl.runner.run_cost_exploration" title="Link to this definition">¶</a></dt>
+<dd><p>Explore cost uncertainty across intervention scenarios.</p>
+<p>Prepares a scenario directory from the RME template (filtering to year 1
+through <code class="docutils literal notranslate"><span class="pre">assessment_year</span></code> and optionally updating reef assignments), then
+calls <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> three times — combined (CA + LM), CA-only, and
+LM-only, writing each run’s cost outputs into a labelled subdirectory
+under <code class="docutils literal notranslate"><span class="pre">results_dir</span></code>.  Ecological metric post-processing is skipped as
+only cost outputs are of interest here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rme_template_path</strong> (<em>str</em>) – Path to the RME output directory to use as a template.</p></li>
+<li><p><strong>nsims</strong> (<em>int</em>) – Number of Monte Carlo draws for cost uncertainty sampling.</p></li>
+<li><p><strong>deploy_model_fn</strong> (<em>str</em>) – Path to deployment spreadsheet model (excluding extension).</p></li>
+<li><p><strong>prod_model_fn</strong> (<em>str</em>) – Path to production spreadsheet model (excluding extension).</p></li>
+<li><p><strong>lm_model_fn</strong> (<em>str</em>) – Path to LM spreadsheet model (excluding extension).</p></li>
+<li><p><strong>results_dir</strong> (<em>str</em>) – Root directory for outputs.  Three subdirectories are created:
+<code class="docutils literal notranslate"><span class="pre">combined/</span></code>, <code class="docutils literal notranslate"><span class="pre">ca_only/</span></code>, and <code class="docutils literal notranslate"><span class="pre">lm_only/</span></code>.</p></li>
+<li><p><strong>assessment_year</strong> (<em>int</em>) – The year corals from the second deployment first become detectable
+in RME (i.e. the RME detection year, not the cost year).  Year 1
+(first deployment) is always included; rows beyond <code class="docutils literal notranslate"><span class="pre">assessment_year</span></code>
+are dropped from the scenario before running.  Cost outputs will be
+labelled <code class="docutils literal notranslate"><span class="pre">assessment_year</span> <span class="pre">-</span> <span class="pre">intervention_year_offset</span></code> (default: one
+year earlier than this value).</p></li>
+<li><p><strong>intervention_year_offset</strong> (<em>int</em><em>, </em><em>default=1</em>) – Passed through to <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code>.  See that function’s docstring for
+full details.  The default of 1 subtracts one year from RME detection
+years so that cost outputs reflect the calendar year in which
+production and deployment actually occurred.</p></li>
+<li><p><strong>reefset_CA</strong> (<em>list</em><em>, </em><em>optional</em>) – Reef IDs to assign to <code class="docutils literal notranslate"><span class="pre">reefset_CA</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;18-096&quot;]</span></code>).
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the template value from <code class="docutils literal notranslate"><span class="pre">scenario_info.json</span></code> is used.</p></li>
+<li><p><strong>reefset_LM</strong> (<em>list</em><em>, </em><em>optional</em>) – Reef IDs to assign to <code class="docutils literal notranslate"><span class="pre">reefset_LM</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;16-071&quot;]</span></code>).
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the template value from <code class="docutils literal notranslate"><span class="pre">scenario_info.json</span></code> is used.</p></li>
+<li><p><strong>metrics</strong> (<em>list</em><em>, </em><em>optional</em>) – Passed to <code class="docutils literal notranslate"><span class="pre">evaluate()</span></code> for ID key generation.  Ecological metric
+files are not post-processed.  Defaults to <code class="docutils literal notranslate"><span class="pre">[rci,</span> <span class="pre">raw_rti,</span> <span class="pre">rfi]</span></code>.</p></li>
+<li><p><strong>uncertainty_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Uncertainty parameters for ecological metrics. Defaults to
+<code class="docutils literal notranslate"><span class="pre">default_uncertainty_dict()</span></code>.</p></li>
+<li><p><strong>nprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of cores to use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapping of scenario label to list of result file paths:
+<code class="docutils literal notranslate"><span class="pre">{&quot;combined&quot;:</span> <span class="pre">[...],</span> <span class="pre">&quot;ca_only&quot;:</span> <span class="pre">[...],</span> <span class="pre">&quot;lm_only&quot;:</span> <span class="pre">[...]}</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.summarise_mc_results">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">summarise_mc_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#rrap_cl.runner.summarise_mc_results" title="Link to this definition">¶</a></dt>
+<dd><p>Summarise Monte Carlo cost exploration results produced by <code class="docutils literal notranslate"><span class="pre">run_cost_exploration</span></code>.</p>
+<p>Reads the combined cost overview CSV from each scenario subdirectory
+(<code class="docutils literal notranslate"><span class="pre">combined/</span></code>, <code class="docutils literal notranslate"><span class="pre">ca_only/</span></code>, <code class="docutils literal notranslate"><span class="pre">lm_only/</span></code>), computes per-year quantiles
+across draws for each cost column, and returns a nested dict suitable for
+JSON serialisation and HTML visualisation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results_dir</strong> (<em>str</em>) – Root directory passed to <code class="docutils literal notranslate"><span class="pre">run_cost_exploration</span></code> (parent of the
+<code class="docutils literal notranslate"><span class="pre">combined/</span></code>, <code class="docutils literal notranslate"><span class="pre">ca_only/</span></code>, and <code class="docutils literal notranslate"><span class="pre">lm_only/</span></code> subdirectories).</p></li>
+<li><p><strong>quantiles</strong> (<em>list</em><em>, </em><em>optional</em>) – Quantile levels to compute, e.g. <code class="docutils literal notranslate"><span class="pre">[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95]</span></code>.
+Defaults to <code class="docutils literal notranslate"><span class="pre">[0.05,</span> <span class="pre">0.25,</span> <span class="pre">0.5,</span> <span class="pre">0.75,</span> <span class="pre">0.95]</span></code>.</p></li>
+<li><p><strong>scenario_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Scenario ID used in the cost overview filename.  Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Structure: <code class="docutils literal notranslate"><span class="pre">{scenario:</span> <span class="pre">{cost_col:</span> <span class="pre">{year:</span> <span class="pre">{quantile_label:</span> <span class="pre">value}}}}</span></code>.
+Also written to <code class="docutils literal notranslate"><span class="pre">&lt;results_dir&gt;/mc_summary.json</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.evaluate_production_cost">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">evaluate_production_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">factors</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#rrap_cl.runner.evaluate_production_cost" title="Link to this definition">¶</a></dt>
+<dd><p>Wrapper that converts factor kwargs into the format expected by
+calculate_production_cost and returns operational and setup costs.
+Only the factors to be overridden need to be provided; all others
+default to their current values in the workbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workbook_path</strong> (<em>str</em>) – Absolute path to the Excel workbook including extension (.xlsx).</p></li>
+<li><p><strong>**factors</strong> – Factor name-value pairs keyed by factor_name from the config CSV.
+Only factors to be overridden need to be supplied.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>op_cost</strong> (<em>float</em>) – Operational cost.</p></li>
+<li><p><strong>setup_cost</strong> (<em>float</em>) – Setup cost.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.evaluate_deployment_cost">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">evaluate_deployment_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">factors</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#rrap_cl.runner.evaluate_deployment_cost" title="Link to this definition">¶</a></dt>
+<dd><p>Wrapper that converts factor kwargs into the format expected by
+calculate_deployment_cost and returns operational and setup costs.
+Only the factors to be overridden need to be provided; all others
+default to their current values in the workbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workbook_path</strong> (<em>str</em>) – Absolute path to the Excel workbook.</p></li>
+<li><p><strong>**factors</strong> – Factor name-value pairs keyed by factor_name from the config CSV.
+Only factors to be overridden need to be supplied.
+due to the leading digit making it an invalid Python identifier.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>op_cost</strong> (<em>float</em>) – Operational cost.</p></li>
+<li><p><strong>setup_cost</strong> (<em>float</em>) – Setup cost.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.evaluate_lm_cost">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">evaluate_lm_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenarios_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">factors</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#rrap_cl.runner.evaluate_lm_cost" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate the LM cost model over a year-by-year coral scenario and apply
+the inventory/replacement model to produce a cost schedule.</p>
+<p>For each year in <code class="docutils literal notranslate"><span class="pre">scenarios_df</span></code>, the required pool count is derived as
+<code class="docutils literal notranslate"><span class="pre">clip(ceil(number</span> <span class="pre">of</span> <span class="pre">corals</span> <span class="pre">/</span> <span class="pre">yield_per_pool),</span> <span class="pre">range_lower,</span> <span class="pre">range_upper)</span></code>
+using the bounds from the LM config. Capex/opex are read back from the
+spreadsheet each year, and the inventory model is applied across the full
+time series.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workbook_path</strong> (<em>str</em>) – Absolute path to the LM Excel workbook including extension (.xlsx).</p></li>
+<li><p><strong>scenarios_df</strong> (<em>pd.DataFrame</em>) – Year-by-year coral scenario table with columns <code class="docutils literal notranslate"><span class="pre">year</span></code> and
+<code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">corals</span></code>. Typically a single rep/intervention slice of
+<code class="docutils literal notranslate"><span class="pre">iv_yearly_scenarios.csv</span></code>. Will be sorted by year internally.</p></li>
+<li><p><strong>**factors</strong> – Factor name-value pairs to override from config best-point values.
+Do not pass <code class="docutils literal notranslate"><span class="pre">larval</span> <span class="pre">release</span> <span class="pre">pools</span></code> — it is derived from
+<code class="docutils literal notranslate"><span class="pre">scenarios_df</span></code> each year.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">scenarios_df</span></code> (sorted by year) extended with columns: <code class="docutils literal notranslate"><span class="pre">capex</span></code>,
+<code class="docutils literal notranslate"><span class="pre">opex</span></code>, <code class="docutils literal notranslate"><span class="pre">inventory</span></code>, <code class="docutils literal notranslate"><span class="pre">new_capex_scale</span></code>,
+<code class="docutils literal notranslate"><span class="pre">new_capex_replacement</span></code>, <code class="docutils literal notranslate"><span class="pre">total_capex</span></code>, <code class="docutils literal notranslate"><span class="pre">total_capex_opex</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ratio</span></code>, <code class="docutils literal notranslate"><span class="pre">average</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.run_cost_model">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">run_cost_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workbook_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nprocs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#rrap_cl.runner.run_cost_model" title="Link to this definition">¶</a></dt>
+<dd><p>Evaluate a cost model over a set of parameter combinations.</p>
+<p>The model type (production or deployment) and config version are inferred
+from the workbook filename — e.g. <code class="docutils literal notranslate"><span class="pre">'3.9.1</span> <span class="pre">CA</span> <span class="pre">Production</span> <span class="pre">Model.xlsx'</span></code>.
+Pass <code class="docutils literal notranslate"><span class="pre">model_type</span></code> explicitly only when the filename does not follow the
+standard naming convention.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">nprocs</span></code> is greater than 1, <code class="docutils literal notranslate"><span class="pre">params_df</span></code> is split into chunks and
+evaluated in parallel — each worker opens its own temporary workbook copy.
+Otherwise the whole DataFrame is evaluated serially in a single workbook
+session.</p>
+<p>Columns not present in <code class="docutils literal notranslate"><span class="pre">params_df</span></code> default to the values currently in the
+workbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workbook_path</strong> (<em>str</em>) – Absolute path to the Excel workbook including extension (.xlsx).</p></li>
+<li><p><strong>params_df</strong> (<em>pd.DataFrame</em>) – Each row is one model evaluation. Column names must be factor names from
+the relevant config CSV. Only factors to be overridden from workbook
+defaults need to be included.</p></li>
+<li><p><strong>model_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;production&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;deployment&quot;</span></code>. Inferred from the filename if
+not provided.</p></li>
+<li><p><strong>nprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of parallel worker processes. Values &lt;= 1 run serially.
+Defaults to serial (<code class="docutils literal notranslate"><span class="pre">None</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Input DataFrame with three appended columns: <code class="docutils literal notranslate"><span class="pre">capex</span></code>, <code class="docutils literal notranslate"><span class="pre">opex</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.sample_joint_factors">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">sample_joint_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nsims</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SALib.ProblemSpec</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#rrap_cl.runner.sample_joint_factors" title="Link to this definition">¶</a></dt>
+<dd><p>Generate Sobol’ samples over the combined factor space of all three models
+(production, deployment, and LM), then slice back into per-model DataFrames.</p>
+<p>Building one combined ProblemSpec ensures every row corresponds to the same
+sample point and that any shared factors are identical across models by
+construction.</p>
+<p>Categorical flooring and discrete value mapping are intentionally <em>not</em>
+applied here — <code class="docutils literal notranslate"><span class="pre">run_cost_model</span></code> handles those transformations to avoid
+double-application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nsims</strong> (<em>int</em>) – Desired total number of model evaluations. The base Sobol’ sample count
+N is derived via <code class="docutils literal notranslate"><span class="pre">get_NK(nsims,</span> <span class="pre">n_combined_factors)</span></code>.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None</em>) – Random seed for reproducibility.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>prod_samples</strong> (<em>pd.DataFrame</em>) – Raw Sobol’ samples for the production model.</p></li>
+<li><p><strong>deploy_samples</strong> (<em>pd.DataFrame</em>) – Raw Sobol’ samples for the deployment model.</p></li>
+<li><p><strong>lm_samples</strong> (<em>pd.DataFrame</em>) – Raw Sobol’ samples for the LM model.</p></li>
+<li><p><strong>combined_sp</strong> (<em>ProblemSpec</em>) – The combined ProblemSpec used for sampling.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.run_joint_cost_models">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">run_joint_cost_models</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_workbook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_workbook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_workbook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">nprocs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pandas.DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#rrap_cl.runner.run_joint_cost_models" title="Link to this definition">¶</a></dt>
+<dd><p>Run production, deployment, and LM cost models against jointly-sampled parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_workbook</strong> (<em>str</em>) – Path to the production model workbook.</p></li>
+<li><p><strong>deploy_workbook</strong> (<em>str</em>) – Path to the deployment model workbook.</p></li>
+<li><p><strong>lm_workbook</strong> (<em>str</em>) – Path to the LM model workbook.</p></li>
+<li><p><strong>prod_samples</strong> (<em>pd.DataFrame</em>) – Raw sample DataFrames as returned by <code class="docutils literal notranslate"><span class="pre">sample_joint_factors</span></code>.</p></li>
+<li><p><strong>deploy_samples</strong> (<em>pd.DataFrame</em>) – Raw sample DataFrames as returned by <code class="docutils literal notranslate"><span class="pre">sample_joint_factors</span></code>.</p></li>
+<li><p><strong>lm_samples</strong> (<em>pd.DataFrame</em>) – Raw sample DataFrames as returned by <code class="docutils literal notranslate"><span class="pre">sample_joint_factors</span></code>.</p></li>
+<li><p><strong>nprocs</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of parallel workers. Default 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>prod_results, deploy_results, lm_results</strong> – Sample DataFrames with <code class="docutils literal notranslate"><span class="pre">capex</span></code>, <code class="docutils literal notranslate"><span class="pre">opex</span></code>, and <code class="docutils literal notranslate"><span class="pre">total_cost</span></code> columns added.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.sweep_ca">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">sweep_ca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deploy_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prod_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dep_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#rrap_cl.runner.sweep_ca" title="Link to this definition">¶</a></dt>
+<dd><p>Sweep a single parameter across the CA production and deployment models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod_model</strong> (<em>str</em>) – Path to production cost model workbook.</p></li>
+<li><p><strong>deploy_model</strong> (<em>str</em>) – Path to deployment cost model workbook.</p></li>
+<li><p><strong>sweep_param</strong> (<em>str</em>) – Name of the parameter to sweep over.</p></li>
+<li><p><strong>search_range</strong> (<em>iterable</em>) – Values to sweep over.</p></li>
+<li><p><strong>prod_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Fixed factor overrides for the production model.</p></li>
+<li><p><strong>dep_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Fixed factor overrides for the deployment model. Any key also present
+in <code class="docutils literal notranslate"><span class="pre">prod_params</span></code> is overwritten by the production value, keeping
+shared factors (e.g. <code class="docutils literal notranslate"><span class="pre">num_1yoec</span></code>, <code class="docutils literal notranslate"><span class="pre">coral_yield_1YOEC</span></code>) consistent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One row per sweep value with columns: <code class="docutils literal notranslate"><span class="pre">search_range</span></code>,
+<code class="docutils literal notranslate"><span class="pre">prod_capex</span></code>, <code class="docutils literal notranslate"><span class="pre">prod_opex</span></code>, <code class="docutils literal notranslate"><span class="pre">dep_capex</span></code>, <code class="docutils literal notranslate"><span class="pre">dep_opex</span></code>,
+<code class="docutils literal notranslate"><span class="pre">total_cost</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rrap_cl.runner.sweep_lm">
+<span class="sig-prename descclassname"><span class="pre">rrap_cl.runner.</span></span><span class="sig-name descname"><span class="pre">sweep_lm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lm_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweep_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lm_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#rrap_cl.runner.sweep_lm" title="Link to this definition">¶</a></dt>
+<dd><p>Sweep a single parameter across the LM cost model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lm_model</strong> (<em>str</em>) – Path to LM cost model workbook.</p></li>
+<li><p><strong>sweep_param</strong> (<em>str</em>) – Name of the parameter to sweep over.</p></li>
+<li><p><strong>search_range</strong> (<em>iterable</em>) – Values to sweep over.</p></li>
+<li><p><strong>lm_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Fixed factor overrides for the LM model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One row per sweep value with columns: <code class="docutils literal notranslate"><span class="pre">search_range</span></code>,
+<code class="docutils literal notranslate"><span class="pre">capex</span></code>, <code class="docutils literal notranslate"><span class="pre">opex</span></code>, <code class="docutils literal notranslate"><span class="pre">total_cost</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../sampling/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">rrap_cl.sampling</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../reef_distances/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">rrap_cl.reef_distances</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">rrap_cl.runner</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#rrap_cl.runner.SEMVER_RE"><code class="docutils literal notranslate"><span class="pre">SEMVER_RE</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.evaluate"><code class="docutils literal notranslate"><span class="pre">evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.parallel_evaluate"><code class="docutils literal notranslate"><span class="pre">parallel_evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.run_cost_exploration"><code class="docutils literal notranslate"><span class="pre">run_cost_exploration()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.summarise_mc_results"><code class="docutils literal notranslate"><span class="pre">summarise_mc_results()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.evaluate_production_cost"><code class="docutils literal notranslate"><span class="pre">evaluate_production_cost()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.evaluate_deployment_cost"><code class="docutils literal notranslate"><span class="pre">evaluate_deployment_cost()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.evaluate_lm_cost"><code class="docutils literal notranslate"><span class="pre">evaluate_lm_cost()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.run_cost_model"><code class="docutils literal notranslate"><span class="pre">run_cost_model()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.sample_joint_factors"><code class="docutils literal notranslate"><span class="pre">sample_joint_factors()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.run_joint_cost_models"><code class="docutils literal notranslate"><span class="pre">run_joint_cost_models()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.sweep_ca"><code class="docutils literal notranslate"><span class="pre">sweep_ca()</span></code></a></li>
+<li><a class="reference internal" href="#rrap_cl.runner.sweep_lm"><code class="docutils literal notranslate"><span class="pre">sweep_lm()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

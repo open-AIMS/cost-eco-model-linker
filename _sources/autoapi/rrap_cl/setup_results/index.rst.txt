@@ -1,0 +1,68 @@
+rrap_cl.setup_results
+=====================
+
+.. py:module:: rrap_cl.setup_results
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   rrap_cl.setup_results.RESULT_DIRS
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   rrap_cl.setup_results.OutputStores
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.setup_results.setup_dirs
+
+
+Module Contents
+---------------
+
+.. py:data:: RESULT_DIRS
+
+.. py:class:: OutputStores
+
+   .. py:attribute:: cost_dir
+      :type:  str
+
+
+   .. py:attribute:: rci_dir
+      :type:  str
+
+
+   .. py:attribute:: rfi_dir
+      :type:  str
+
+
+   .. py:attribute:: rti_dir
+      :type:  str
+
+
+   .. py:attribute:: intervention_keys_dir
+      :type:  str
+
+
+.. py:function:: setup_dirs(base_dir: str) -> OutputStores
+
+   Create output directories at specified location.
+
+   :param base_dir: Base directory for all output folders.
+   :type base_dir: str
+
+   :returns: Named collection of output directory paths.
+   :rtype: OutputStores
+
+

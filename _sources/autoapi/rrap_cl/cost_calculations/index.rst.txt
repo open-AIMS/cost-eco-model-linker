@@ -1,0 +1,218 @@
+rrap_cl.cost_calculations
+=========================
+
+.. py:module:: rrap_cl.cost_calculations
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   rrap_cl.cost_calculations.THIS_DIR
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.cost_calculations.cost_types
+   rrap_cl.cost_calculations.initialize_cost_df
+   rrap_cl.cost_calculations.sample_cost_model
+   rrap_cl.cost_calculations.lm_opex_distance_multiplier
+   rrap_cl.cost_calculations.update_lm_factors
+   rrap_cl.cost_calculations.update_factors
+   rrap_cl.cost_calculations.calc_production_requirement
+   rrap_cl.cost_calculations.calculate_costs
+
+
+Module Contents
+---------------
+
+.. py:data:: THIS_DIR
+
+.. py:function:: cost_types(cost, contingency, nsims)
+
+   Calculate key cost codes:
+   - 1 : CAPEX,  sum of production and deployment cost
+   - 2 : Contingency CAPEX,  % of CAPEX
+   - 3 : OPEX,  sum of production and deployment cost
+   - 4 : Sustaining capital OPEX, set to zero for now (assumed to be included in OPEX through contract)
+   - 5 : Contingency OPEX, % of OPEX
+   - 6 : Vessel fuel, only relevant if volunteer vessels are used - set to zero for now
+   - 7 : CAPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 8 : Contingency CAPEX-monitoring, % of CAPEX-monitoring
+   - 9 : OPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 10 : Sustaining capital OPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 11 : Contingency OPEX-monitoring, % of OPEX-monitoring
+
+   :param cost: Dataframe containing 'capex' and 'opex'
+   :type cost: dataframe
+   :param contingency: Contingency proportion.
+   :type contingency: float
+   :param nsims: Total number of simulations (from metrics sampling)
+   :type nsims: int
+
+
+.. py:function:: initialize_cost_df(years, nsims)
+
+   Initialize dataframe for storing sampled cost data.
+
+   Components:
+   - 1 : CAPEX, sum of production and deployment cost
+   - 2 : Contingency CAPEX, % of CAPEX
+   - 3 : OPEX, sum of production and deployment cost
+   - 4 : Sustaining capital OPEX, set to zero for now (assumed to be included in OPEX through contract)
+   - 5 : Contingency OPEX, % of OPEX
+   - 6 : Vessel fuel, only relevant if volunteer vessels are used - set to zero for now
+   - 7 : CAPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 8 : Contingency CAPEX-monitoring, % of CAPEX-monitoring
+   - 9 : OPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 10 : Sustaining capital OPEX-monitoring, set to zero (assumed no monitoring cost)
+   - 11 : Contingency OPEX-monitoring, % of OPEX-monitoring
+
+   :param years: All simulation years (non-intervention years will have zero costs)
+   :type years: np.array
+   :param nsims: Total number of simulations (from metrics sampling)
+   :type nsims: int
+
+   :returns: **cost_df**
+   :rtype: dataframe
+
+
+.. py:function:: sample_cost_model(nsims, seed: int = None)
+
+   Sample cost model parameters for production, deployment, and LM models.
+
+   :param nsims: Total number of simulations (from metrics sampling).  When ``None``
+                 or ``1`` Sobol' sampling is skipped and a single row of
+                 ``best_point_value`` entries is returned instead.
+   :type nsims: int or None
+   :param seed: Random seed for reproducibility.
+   :type seed: int, optional
+
+   :returns: * **factor_specs_prod** (*DataFrame*)
+             * **factors_df_prod** (*DataFrame*)
+             * **factor_specs_dep** (*DataFrame*)
+             * **factors_df_dep** (*DataFrame*)
+             * **factor_specs_lm** (*DataFrame*)
+             * **factors_df_lm** (*DataFrame*)
+
+
+.. py:function:: lm_opex_distance_multiplier(distance_nm: float) -> float
+
+   Return the OPEX multiplier for LM interventions based on deployment distance.
+
+   Derived from the regression 0.2495 * x^0.517, where x is distance in
+   nautical miles. The relationship is calibrated so that 15 NM → ×1.0 (100%),
+   30 NM → ×1.5, 60 NM → ×2.0, 120 NM → ×3.0.
+
+   :param distance_nm: Distance from port in nautical miles.
+   :type distance_nm: float
+
+   :returns: Multiplier to apply to the raw LM OPEX value.
+   :rtype: float
+
+
+.. py:function:: update_lm_factors(lm_factors, iv_spec, pool_min, pool_max, sample_scale=False)
+
+   Update sampled LM factor dataframe with the year-specific larval release
+   pool count derived from coral counts in the intervention specification.
+
+   :param lm_factors: Factors dataframe for the LM cost model.
+   :type lm_factors: DataFrame
+   :param iv_spec: Intervention specification for the current rep and year (one row per
+                   reefset); must contain ``number_of_1YO_corals``.
+   :type iv_spec: DataFrame
+   :param pool_min: Minimum valid pool count (``range_lower`` from LM config).
+   :type pool_min: int
+   :param pool_max: Maximum valid pool count (``range_upper`` from LM config).
+   :type pool_max: int
+   :param sample_scale: When ``True`` (cost exploration mode), the larval pool count is already
+                        sampled from the Sobol sequence and must not be overwritten.  The RME
+                        template coral counts are ignored.  Defaults to ``False``.
+   :type sample_scale: bool, optional
+
+   :returns: **lm_factors**
+   :rtype: DataFrame
+
+
+.. py:function:: update_factors(prod_factors, deploy_factors, iv_spec, sample_scale=False)
+
+   Update sampled cost model parameter dataframes with intervention specific parameters
+   for a single ecological repeat.
+
+   :param prod_factors: Factors dataframe for the production cost model.
+   :type prod_factors: dataframe
+   :param deploy_factors: Factors dataframe for the deployment cost model.
+   :type deploy_factors: dataframe
+   :param iv_spec: Intervention specification dataframe for the current rep and year,
+                   containing one row per reefset.
+   :type iv_spec: dataframe
+   :param sample_scale: When ``True`` (cost exploration mode), ``num_1yoec`` is already sampled
+                        from the Sobol sequence and must not be overwritten with the fixed coral
+                        count from the RME template.  ``coral_yield_1YOEC`` is still synced
+                        between models and ``distance_from_port`` is still set from ``iv_spec``.
+                        Defaults to ``False``.
+   :type sample_scale: bool, optional
+
+
+.. py:function:: calc_production_requirement(deploy_factors, prev_iv_spec)
+
+   Calculate the number of devices required in the previous intervention year
+   for a single ecological repeat. Used to determine whether additional
+   production capacity is needed in the current year.
+
+   :param deploy_factors: Factors dataframe for the deployment cost model (used for yield values).
+   :type deploy_factors: dataframe
+   :param prev_iv_spec: Intervention specification dataframe for the previous intervention year
+                        and rep, containing one row per reefset.
+   :type prev_iv_spec: dataframe
+
+   :returns: **prev_devices** -- Number of devices required in the previous intervention year, per simulation.
+   :rtype: np.ndarray
+
+
+.. py:function:: calculate_costs(stores: rrap_cl.setup_results.OutputStores, ID_key_fn: str, nsims: int, deploy_model_filepath: str, prod_model_filepath: str, lm_model_filepath: str, cont_p: float = 0.25, p_iter_id: int = 0, active_models: set = None, sample_scale: bool = False, session_reset_interval: int = _RESET_INTERVAL, seed: int = None, additional_deploy_opex: float = 0.0)
+
+   Sample costs for a set of interventions specified in ID_key, sampling nsims.
+
+   :param stores: Data class holding output directory locations
+   :type stores: OutputStores
+   :param ID_key_fn: Target filename for output.
+   :type ID_key_fn: str
+   :param nsims: Total number of draws to sample cost models, should match ecological metrics sampling.
+   :type nsims: int
+   :param deploy_model_filepath: Path to deployment cost model.
+   :type deploy_model_filepath: string
+   :param prod_model_filepath: Path to production cost model.
+   :type prod_model_filepath: string
+   :param lm_model_filepath: Path to LM cost model.
+   :type lm_model_filepath: string
+   :param cont_p: Contingency cost proportion.
+   :type cont_p: float
+   :param p_iter_id: ID used for parallel sampling to keep track of batches for ordered recombination.
+   :type p_iter_id: int
+   :param active_models: Set of intervention types to compute costs for.  Valid values are
+                         ``"outplant"`` and ``"lm"``.  Defaults to both when ``None``.
+                         Pass ``{"outplant"}`` for CA-only or ``{"lm"}`` for LM-only scenarios.
+   :type active_models: set, optional
+   :param sample_scale: When ``True`` (cost exploration mode), intervention scale (``num_1yoec``
+                        for outplant, larval pool count for LM) is drawn from the Sobol samples
+                        rather than derived from the RME template coral counts.  Defaults to
+                        ``False``.
+   :type sample_scale: bool, optional
+   :param session_reset_interval: Recycle the process-local Excel session every N calls to bound memory
+                                  growth.  Defaults to ``_RESET_INTERVAL`` (50).
+   :type session_reset_interval: int, optional
+   :param seed: Random seed for reproducibility.
+   :type seed: int, optional
+   :param additional_deploy_opex: A fixed amount (in dollars) added to deployment OPEX for each
+                                  deployment year.  Applied identically across all draws (i.e. it
+                                  is a deterministic external cost, not sampled).  Standard contingency is
+                                  also applied to this amount via the normal ``cost_types`` calculation.
+                                  Defaults to 0.0 (no additional cost).
+   :type additional_deploy_opex: float, optional
+
+

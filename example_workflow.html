@@ -1,0 +1,734 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Context" href="context/Context.html"><link rel="prev" title="Output file format" href="output_file_format.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Example workflow - rrap-cost-linker 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">rrap-cost-linker 0.0.1 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">rrap-cost-linker 0.0.1 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment_setup.html">Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cost_models.html">Cost Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generate_rme_results.html">Generating scenarios in ReefModEngine.jl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_file_format.html">Output file format</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Example workflow</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="context/Context.html">Context</a><input aria-label="Toggle navigation of Context" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="context/01_CostModels.html">1. Cost Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/02_EcologicalModels.html">2. Ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/03_LinkingCostAndEcologicalModels.html">3.	Linking cost and ecological models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/04_AppendicesAndAcknowledgements.html">Appendix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="context/04_AppendicesAndAcknowledgements.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/rrap_cl/index.html">rrap_cl</a><input aria-label="Toggle navigation of rrap_cl" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/calculate_metrics/index.html">rrap_cl.calculate_metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/cost_calculations/index.html">rrap_cl.cost_calculations</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/rrap_cl/handlers/index.html">rrap_cl.handlers</a><input aria-label="Toggle navigation of rrap_cl.handlers" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/rrap_cl/handlers/excel_handlers/index.html">rrap_cl.handlers.excel_handlers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/rrap_cl/handlers/spreadsheet_interface/index.html">rrap_cl.handlers.spreadsheet_interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/parallel_cost_sampling/index.html">rrap_cl.parallel_cost_sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/process_RME_data/index.html">rrap_cl.process_RME_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/reef_distances/index.html">rrap_cl.reef_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/runner/index.html">rrap_cl.runner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/sampling/index.html">rrap_cl.sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/rrap_cl/setup_results/index.html">rrap_cl.setup_results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/example_workflow.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="example-workflow">
+<h1>Example workflow<a class="headerlink" href="#example-workflow" title="Link to this heading">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="c1"># Filepath to RME runs to process</span>
+<span class="n">rme_files_path</span> <span class="o">=</span> <span class="s2">&quot;./data/eco_linker_example&quot;</span>
+<span class="n">deployment_model</span> <span class="o">=</span> <span class="s2">&quot;./3.9.0 CA Deployment Model.xlsx&quot;</span>
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">lm_model</span> <span class="o">=</span> <span class="s2">&quot;./3.9.6 LM Model.xlsx&quot;</span>
+<span class="n">output_path</span> <span class="o">=</span> <span class="s2">&quot;./results&quot;</span>
+<span class="n">unc_config</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">default_uncertainty_dict</span><span class="p">()</span>
+
+<span class="c1"># Change the entries in `unc_config` if needed</span>
+<span class="c1"># unc_config[&quot;rti_uncert&quot;] = 0</span>
+
+<span class="c1"># Number of sims for metrics sampling (default includes ecological and expert uncertainty in RCI calcs)</span>
+<span class="n">nsims</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">cl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+    <span class="n">rme_files_path</span><span class="p">,</span>
+    <span class="n">nsims</span><span class="p">,</span>
+    <span class="n">deployment_model</span><span class="p">,</span>
+    <span class="n">production_model</span><span class="p">,</span>
+    <span class="n">lm_model</span><span class="p">,</span>
+    <span class="n">output_path</span><span class="p">,</span>
+    <span class="n">uncertainty_dict</span><span class="o">=</span><span class="n">unc_config</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>For parallel runs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nsims</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">ncores</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cl</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+        <span class="n">rme_files_path</span><span class="p">,</span>
+        <span class="n">nsims</span><span class="p">,</span>
+        <span class="n">deployment_model</span><span class="p">,</span>
+        <span class="n">production_model</span><span class="p">,</span>
+        <span class="n">lm_model</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="p">,</span>
+        <span class="n">uncertainty_dict</span><span class="o">=</span><span class="n">unc_config</span><span class="p">,</span>
+        <span class="n">nprocs</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<section id="sensitivity-analysis">
+<h2>Sensitivity analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">prod_cost_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">deploy_cost_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.0 CA Deployment Model.xlsx&quot;</span>
+
+<span class="c1"># Number of samples to take (must be power of 2)</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">7</span>
+
+<span class="c1"># Samples model and returns an SALib problem specification with results under the</span>
+<span class="c1"># `cost_model_results` key.</span>
+<span class="n">prod_sp</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_production_model</span><span class="p">(</span><span class="n">prod_cost_model</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+<span class="n">deploy_sp</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_deployment_model</span><span class="p">(</span><span class="n">deploy_cost_model</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="c1"># Conduct and save sensitivity analysis results</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">extract_sa_results</span><span class="p">(</span><span class="n">prod_sp</span><span class="p">,</span> <span class="s2">&quot;./figs/prod/&quot;</span><span class="p">)</span>
+<span class="n">cl</span><span class="o">.</span><span class="n">extract_sa_results</span><span class="p">(</span><span class="n">deploy_sp</span><span class="p">,</span> <span class="s2">&quot;./figs/deploy/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above will generate a set of figures (for production or deployment costs).</p>
+<p>Example PAWN analysis results:</p>
+<p><img alt="PAWN SA barplot" src="_images/operational_cost_pawn_barplot_SA.png" /></p>
+</section>
+<section id="running-models-directly">
+<h2>Running models directly<a class="headerlink" href="#running-models-directly" title="Link to this heading">¶</a></h2>
+<p>The model type (<code class="docutils literal notranslate"><span class="pre">production</span></code> or <code class="docutils literal notranslate"><span class="pre">deployment</span></code>) and config version are inferred
+automatically from the workbook filename, so you only need to supply the path.</p>
+<section id="single-evaluation">
+<h3>Single evaluation<a class="headerlink" href="#single-evaluation" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">evaluate_production_cost</span></code> and <code class="docutils literal notranslate"><span class="pre">evaluate_deployment_cost</span></code> accept keyword arguments
+for any factor you want to override; all other factors default to the values currently
+in the spreadsheet. Both return <code class="docutils literal notranslate"><span class="pre">(capex,</span> <span class="pre">opex)</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">deployment_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.0 CA Deployment Model.xlsx&quot;</span>
+
+<span class="n">capex</span><span class="p">,</span> <span class="n">opex</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">evaluate_production_cost</span><span class="p">(</span><span class="n">production_model</span><span class="p">,</span> <span class="n">num_1yoec</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capex</span> <span class="o">+</span> <span class="n">opex</span><span class="p">)</span>
+
+<span class="n">capex</span><span class="p">,</span> <span class="n">opex</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">evaluate_deployment_cost</span><span class="p">(</span><span class="n">deployment_model</span><span class="p">,</span> <span class="n">reef</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">distance_from_port</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">capex</span> <span class="o">+</span> <span class="n">opex</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-evaluation">
+<h3>Batch evaluation<a class="headerlink" href="#batch-evaluation" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">run_cost_model</span></code> accepts a DataFrame where each row is one model evaluation.
+Columns not present default to the values in the spreadsheet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;num_1yoec&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">500_000</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="mi">2_000_000</span><span class="p">],</span>
+    <span class="s2">&quot;coral_yield_1YOEC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="s2">&quot;species_no&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+<span class="p">})</span>
+
+<span class="c1"># Serial</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_cost_model</span><span class="p">(</span><span class="n">production_model</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+
+<span class="c1"># Parallel — each worker opens its own temporary copy of the workbook</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_cost_model</span><span class="p">(</span><span class="n">production_model</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">nprocs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1">#    num_1yoec  coral_yield_1YOEC  species_no      capex       opex  total_cost</span>
+<span class="c1"># 0     500000                0.3          20  2696740.0   910485.3   3607225.3</span>
+<span class="c1"># 1    1000000                0.4          20  4411200.0  1473854.1   5885054.1</span>
+<span class="c1"># 2    2000000                0.5          20  6788400.0  2530646.0   9319046.0</span>
+</pre></div>
+</div>
+</section>
+<section id="parameter-sweep">
+<h3>Parameter sweep<a class="headerlink" href="#parameter-sweep" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">sweep_ca</span></code> evaluates the CA production and deployment models jointly over a range of values
+for a single parameter, keeping all other factors at their spreadsheet defaults. Shared
+factors (such as <code class="docutils literal notranslate"><span class="pre">num_1yoec</span></code> and <code class="docutils literal notranslate"><span class="pre">coral_yield_1YOEC</span></code>) are kept consistent between the two
+models automatically.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sweep_lm</span></code> does the same for the LM model independently.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">deployment_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.0 CA Deployment Model.xlsx&quot;</span>
+<span class="n">lm_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.6 LM Model.xlsx&quot;</span>
+
+<span class="c1"># Sweep num_1yoec across production and deployment, all other factors at spreadsheet defaults</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">sweep_ca</span><span class="p">(</span>
+    <span class="n">production_model</span><span class="p">,</span>
+    <span class="n">deployment_model</span><span class="p">,</span>
+    <span class="n">sweep_param</span><span class="o">=</span><span class="s2">&quot;num_1yoec&quot;</span><span class="p">,</span>
+    <span class="n">search_range</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">100_000</span><span class="p">,</span> <span class="mi">500_000</span><span class="p">,</span> <span class="mi">100_000</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Fix additional production factors while sweeping coral_yield_1YOEC</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">sweep_ca</span><span class="p">(</span>
+    <span class="n">production_model</span><span class="p">,</span>
+    <span class="n">deployment_model</span><span class="p">,</span>
+    <span class="n">sweep_param</span><span class="o">=</span><span class="s2">&quot;coral_yield_1YOEC&quot;</span><span class="p">,</span>
+    <span class="n">search_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.51</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+    <span class="n">prod_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;num_1yoec&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span> <span class="s2">&quot;species_no&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="c1">#    search_range  prod_capex    prod_opex  dep_capex      dep_opex      total_cost</span>
+<span class="c1"># 0           0.3   5393480.0  1820970.500  1320560.0  7.870774e+06  1.640578e+07</span>
+<span class="c1"># 1           0.4   4411200.0  1473854.125  1320560.0  7.870774e+06  1.507639e+07</span>
+<span class="c1"># 2           0.5   3394200.0  1265323.000  1320560.0  7.870774e+06  1.385086e+07</span>
+
+<span class="c1"># Sweep a parameter in the LM model</span>
+<span class="n">lm_df</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">sweep_lm</span><span class="p">(</span>
+    <span class="n">lm_model</span><span class="p">,</span>
+    <span class="n">sweep_param</span><span class="o">=</span><span class="s2">&quot;distance_from_port&quot;</span><span class="p">,</span>
+    <span class="n">search_range</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="c1">#    search_range      capex         opex    total_cost</span>
+<span class="c1"># 0            10  ...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="questions-and-answers">
+<h2>Questions and Answers<a class="headerlink" href="#questions-and-answers" title="Link to this heading">¶</a></h2>
+<section id="how-are-deployment-distances-determined">
+<h3>How are deployment distances determined?<a class="headerlink" href="#how-are-deployment-distances-determined" title="Link to this heading">¶</a></h3>
+<p>For a given simulation, a set of reefs where interventions occur are determined a priori,
+or as part of a simulated dynamic decision making process.</p>
+<p>The mean longitude and latitude is determined for a defined set of intervention locations.
+From this, the distance to the closest port is determined.</p>
+<p>While CEML does not currently support assessment of deployment scenarios that change
+deployment locations throughout a simulation, the determined costs should still be
+representative/indicative so long as the intervention reefs are confined within a
+given area.</p>
+</section>
+<section id="what-does-discrete-values-column-in-the-configuration-csv-do">
+<h3>What does <code class="docutils literal notranslate"><span class="pre">discrete_values</span></code> column in the configuration CSV do?<a class="headerlink" href="#what-does-discrete-values-column-in-the-configuration-csv-do" title="Link to this heading">¶</a></h3>
+<p>The flooring trick is used to map an input from its continuous sampled representation
+back to a discrete value. This naturally works when the inputs are intended to be between
+whole numbers (e.g., 1, 2, 3), but non-Real discrete values (e.g., 0.1, 0.2, 0.3) are
+trickier. To handle this, the <code class="docutils literal notranslate"><span class="pre">discrete_values</span></code> column samples between the number of
+available <em>options</em> and the sampled value then mapped back to the option value:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Parameter</span> <span class="nb">range</span><span class="p">:</span> <span class="mf">0.1</span> <span class="n">to</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">incrementing</span> <span class="n">by</span> <span class="mf">0.1</span>
+<span class="n">Sampled</span> <span class="nb">range</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">5</span>
+
+<span class="n">Sampled</span> <span class="n">values</span> <span class="n">are</span> <span class="n">continuous</span><span class="p">:</span>
+<span class="p">[</span><span class="mf">1.145</span><span class="p">,</span> <span class="mf">2.11</span><span class="p">,</span> <span class="mf">3.24</span><span class="p">,</span> <span class="mf">4.34</span><span class="p">,</span> <span class="mf">5.21</span><span class="p">]</span>
+
+<span class="n">Taking</span> <span class="n">the</span> <span class="n">floor</span> <span class="n">of</span> <span class="n">the</span> <span class="n">sample</span> <span class="n">resolves</span> <span class="n">to</span><span class="p">:</span>
+<span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
+
+<span class="n">Based</span> <span class="n">on</span> <span class="n">a</span> <span class="n">mapping</span><span class="p">:</span>
+<span class="mi">1</span> <span class="o">-&gt;</span> <span class="mf">0.1</span>
+<span class="mi">2</span> <span class="o">-&gt;</span> <span class="mf">0.2</span>
+<span class="mi">3</span> <span class="o">-&gt;</span> <span class="mf">0.3</span>
+<span class="mi">4</span> <span class="o">-&gt;</span> <span class="mf">0.4</span>
+<span class="mi">5</span> <span class="o">-&gt;</span> <span class="mf">0.5</span>
+
+<span class="n">So</span> <span class="n">the</span> <span class="n">realized</span> <span class="n">sample</span> <span class="ow">is</span> <span class="n">then</span><span class="p">:</span>
+<span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="how-are-distances-between-production-facility-and-port-handled">
+<h3>How are distances between production facility and port handled?<a class="headerlink" href="#how-are-distances-between-production-facility-and-port-handled" title="Link to this heading">¶</a></h3>
+<p>The current implementation is to identify the center location of all intervention reefs,
+and then to identify the closest representative <em>reef</em> (as configured in the cost models).
+From there, the closest representatative <em>port</em> is identified. This port is what is used to
+indicate the facility-port distance.</p>
+<p>An alternate conceptualization is that ports may be too busy, or operators unavailable.
+In such circumstances, it is plausible that an different port would be used.
+The line below could be added to the deployment configuration CSV to explore such scenarios.</p>
+<blockquote>
+<div><p>cost_type, sheet, cell_pos, factor_names, variable_type, SA_range_lower, SA_range_upper
+best_point_value, range_lower, range_upper, discrete_values, UNC_distribution, is_cat,
+comments</p>
+<p>deployment,Dashboard,D17,distance_from_facility,integer,50,350,50,50,350,“50,350”,discrete,TRUE,in kilometers</p>
+</div></blockquote>
+</section>
+<section id="what-is-the-maximum-ship-range-from-port">
+<h3>What is the maximum ship range from port?<a class="headerlink" href="#what-is-the-maximum-ship-range-from-port" title="Link to this heading">¶</a></h3>
+<p>The cost models support up to 119.99 nautical miles (NM).</p>
+</section>
+<section id="how-is-the-relationship-between-the-number-of-coral-species-and-functional-groups-handled">
+<h3>How is the relationship between the number of coral species and functional groups handled?<a class="headerlink" href="#how-is-the-relationship-between-the-number-of-coral-species-and-functional-groups-handled" title="Link to this heading">¶</a></h3>
+<p>The short answer is they are not.</p>
+<p>The ecological models represent corals in terms of functional groups. Each functional group
+are represented by several species, and the number of species can differ between functional
+groups. While the configuration is flexible, the cost models typically assume 20 species
+total. How these 20 species are associated with each group is not considered for the purpose
+of costings.</p>
+<p>A complication is that the 20 species is on a per-region basis. Interventions across two
+regions would effectively double the cost compared to intervening on one region, as it is
+assumed that species cannot cross regions (either due to socio-cultural reasons or
+ecological concerns).</p>
+</section>
+<section id="do-the-eia-output-files-contain-per-draw-cost-breakdowns">
+<h3>Do the EIA output files contain per-draw cost breakdowns?<a class="headerlink" href="#do-the-eia-output-files-contain-per-draw-cost-breakdowns" title="Link to this heading">¶</a></h3>
+<p>No. The EIA files (<code class="docutils literal notranslate"><span class="pre">EIA_{id}_{model}.csv</span></code>) record industry-code cost breakdowns (CAPEX
+and OPEX by ANZSIC code) for the <strong>last cost model draw only</strong>. This is a known limitation:
+<code class="docutils literal notranslate"><span class="pre">fill_EIA_info</span></code> reads directly from the workbook after all draws have been evaluated, so
+only the final workbook state is captured.</p>
+<p>Per-draw cost totals (CAPEX, contingency, OPEX, etc.) are available in the
+<code class="docutils literal notranslate"><span class="pre">intervention_cost_data</span></code> CSV files, which contain one <code class="docutils literal notranslate"><span class="pre">draw</span></code> column per ecological
+replicate × cost model sample combination. Use these files for uncertainty quantification.
+The EIA files are intended for industry-code cost structure auditing, not for propagating
+uncertainty.</p>
+</section>
+<section id="do-the-cost-parameter-csv-files-reflect-the-actual-deployment-distance-used">
+<h3>Do the cost parameter CSV files reflect the actual deployment distance used?<a class="headerlink" href="#do-the-cost-parameter-csv-files-reflect-the-actual-deployment-distance-used" title="Link to this heading">¶</a></h3>
+<p>Partially. The files <code class="docutils literal notranslate"><span class="pre">ID{id}_rep{rep}_cost_params_deployment_pid{pid}.csv</span></code> are saved once
+per replicate, before the per-year loop runs. The <code class="docutils literal notranslate"><span class="pre">distance_from_port</span></code> value recorded is
+taken from the <strong>first reefset of the first intervention year</strong> for that replicate, which
+is used as a representative value.</p>
+<p>In multi-reefset scenarios, each reefset may have a different distance. Only the distance
+for the first reefset is captured in the params file; distances for other reefsets are
+applied during the year loop via <code class="docutils literal notranslate"><span class="pre">update_factors</span></code> but are not separately recorded.</p>
+</section>
+<section id="are-there-any-manual-changes-i-need-to-do-to-the-cost-models">
+<h3>Are there any manual changes I need to do to the cost models?<a class="headerlink" href="#are-there-any-manual-changes-i-need-to-do-to-the-cost-models" title="Link to this heading">¶</a></h3>
+<p>Yes.</p>
+<p>In the CA-Production cost models, the “New species batches - count” field (currently
+E11) should be set to zero (0).</p>
+</section>
+<section id="can-i-change-the-production-facility">
+<h3>Can I change the production facility?<a class="headerlink" href="#can-i-change-the-production-facility" title="Link to this heading">¶</a></h3>
+<p>No, currently it is assumed that the production facility is always in Townsville and so
+this is hardcoded in.</p>
+</section>
+</section>
+<section id="additional-evaluate-parameters">
+<h2>Additional evaluate() parameters<a class="headerlink" href="#additional-evaluate-parameters" title="Link to this heading">¶</a></h2>
+<p>Several parameters of <code class="docutils literal notranslate"><span class="pre">cl.evaluate()</span></code> are useful for specific workflows but are not
+shown in the basic example above.</p>
+<p><code class="docutils literal notranslate"><span class="pre">active_models</span></code> accepts a Python set controlling which intervention types are costed. Pass
+<code class="docutils literal notranslate"><span class="pre">{&quot;outplant&quot;}</span></code> to run only the CA Production and Deployment models, <code class="docutils literal notranslate"><span class="pre">{&quot;lm&quot;}</span></code> to run only
+the LM model, or omit the argument (or pass both) to run all three. This is useful when
+only one intervention type is present in a given RME result set.</p>
+<p><code class="docutils literal notranslate"><span class="pre">costs_only</span></code> is a boolean that, when set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, skips the ecological metric
+post-processing step and writes only cost output files. This reduces runtime significantly
+when ecological metrics are not needed for a given run.</p>
+<p><code class="docutils literal notranslate"><span class="pre">distance_override_NM</span></code> accepts a float that replaces the computed distance-to-port for all
+reefsets with a fixed value. This is intended for best-estimate explorer runs where the
+exact reef locations are unknown or intentionally abstracted.</p>
+<p><code class="docutils literal notranslate"><span class="pre">nprocs</span></code> controls the number of parallel worker processes. Values greater than 1 distribute
+replicates across workers. Parallel runs must be guarded with <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">&quot;__main__&quot;:</span></code>
+on Windows.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sample_scale</span></code> is a boolean that, when <code class="docutils literal notranslate"><span class="pre">True</span></code>, draws the intervention scale
+(<code class="docutils literal notranslate"><span class="pre">num_1yoec</span></code>, larval pool count) from the Sobol samples rather than from the RME template
+coral counts. This is used internally by <code class="docutils literal notranslate"><span class="pre">run_cost_exploration()</span></code> for scenario comparison
+runs and is not typically set manually.</p>
+</section>
+<section id="cost-exploration-workflow">
+<h2>Cost exploration workflow<a class="headerlink" href="#cost-exploration-workflow" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cl.run_cost_exploration()</span></code> runs three scenarios back-to-back — combined (CA + LM),
+CA-only, and LM-only — against a single RME template, filtering the simulation to a
+specified assessment year. This is useful for comparing the relative cost contributions of
+each intervention type.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">rme_template_path</span> <span class="o">=</span> <span class="s2">&quot;./data/rme_template&quot;</span>
+<span class="n">deployment_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.0 CA Deployment Model.xlsx&quot;</span>
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">lm_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.6 LM Model.xlsx&quot;</span>
+<span class="n">results_dir</span> <span class="o">=</span> <span class="s2">&quot;./exploration_results&quot;</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_cost_exploration</span><span class="p">(</span>
+    <span class="n">rme_template_path</span><span class="p">,</span>
+    <span class="n">nsims</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">deploy_model_fn</span><span class="o">=</span><span class="n">deployment_model</span><span class="p">,</span>
+    <span class="n">prod_model_fn</span><span class="o">=</span><span class="n">production_model</span><span class="p">,</span>
+    <span class="n">lm_model_fn</span><span class="o">=</span><span class="n">lm_model</span><span class="p">,</span>
+    <span class="n">results_dir</span><span class="o">=</span><span class="n">results_dir</span><span class="p">,</span>
+    <span class="n">assessment_year</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">reefset_CA</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reef_001&quot;</span><span class="p">,</span> <span class="s2">&quot;reef_002&quot;</span><span class="p">],</span>
+    <span class="n">reefset_LM</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reef_003&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="c1"># results is a dict with keys &quot;combined&quot;, &quot;ca_only&quot;, &quot;lm_only&quot;,</span>
+<span class="c1"># each mapping to a list of output file paths.</span>
+</pre></div>
+</div>
+<p>After running, <code class="docutils literal notranslate"><span class="pre">cl.summarise_mc_results()</span></code> reads the cost overview CSVs from each
+scenario subdirectory and computes per-year quantiles, returning a nested dict and writing
+a <code class="docutils literal notranslate"><span class="pre">mc_summary.json</span></code> file to the results directory.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">summarise_mc_results</span><span class="p">(</span>
+    <span class="n">results_dir</span><span class="p">,</span>
+    <span class="n">quantiles</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">],</span>
+    <span class="n">scenario_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="joint-cost-model-sampling">
+<h2>Joint cost model sampling<a class="headerlink" href="#joint-cost-model-sampling" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cl.sample_joint_factors()</span></code> generates a single Sobol sample over the combined factor
+space of all three models. Shared factors (e.g., <code class="docutils literal notranslate"><span class="pre">coral_yield_1YOEC</span></code>, <code class="docutils literal notranslate"><span class="pre">num_1yoec</span></code>) are
+sampled once and assigned consistently across models, avoiding inconsistencies that would
+arise from sampling each model independently.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cl.run_joint_cost_models()</span></code> evaluates all three models against the joint samples and
+returns per-model result DataFrames.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rrap_cl</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cl</span>
+
+<span class="n">production_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.1 CA Production Model.xlsx&quot;</span>
+<span class="n">deployment_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.0 CA Deployment Model.xlsx&quot;</span>
+<span class="n">lm_model</span> <span class="o">=</span> <span class="s2">&quot;./models/3.9.6 LM Model.xlsx&quot;</span>
+
+<span class="n">prod_samples</span><span class="p">,</span> <span class="n">dep_samples</span><span class="p">,</span> <span class="n">lm_samples</span><span class="p">,</span> <span class="n">combined_sp</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">sample_joint_factors</span><span class="p">(</span>
+    <span class="n">nsims</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">prod_results</span><span class="p">,</span> <span class="n">dep_results</span><span class="p">,</span> <span class="n">lm_results</span> <span class="o">=</span> <span class="n">cl</span><span class="o">.</span><span class="n">run_joint_cost_models</span><span class="p">(</span>
+    <span class="n">production_model</span><span class="p">,</span>
+    <span class="n">deployment_model</span><span class="p">,</span>
+    <span class="n">lm_model</span><span class="p">,</span>
+    <span class="n">prod_samples</span><span class="p">,</span>
+    <span class="n">dep_samples</span><span class="p">,</span>
+    <span class="n">lm_samples</span><span class="p">,</span>
+    <span class="n">nprocs</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">combined_sp</span></code> ProblemSpec can then be used with SALib to compute sensitivity indices
+across all three models simultaneously.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="context/Context.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Context</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="output_file_format.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Output file format</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Example workflow</a><ul>
+<li><a class="reference internal" href="#sensitivity-analysis">Sensitivity analysis</a></li>
+<li><a class="reference internal" href="#running-models-directly">Running models directly</a><ul>
+<li><a class="reference internal" href="#single-evaluation">Single evaluation</a></li>
+<li><a class="reference internal" href="#batch-evaluation">Batch evaluation</a></li>
+<li><a class="reference internal" href="#parameter-sweep">Parameter sweep</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#questions-and-answers">Questions and Answers</a><ul>
+<li><a class="reference internal" href="#how-are-deployment-distances-determined">How are deployment distances determined?</a></li>
+<li><a class="reference internal" href="#what-does-discrete-values-column-in-the-configuration-csv-do">What does <code class="docutils literal notranslate"><span class="pre">discrete_values</span></code> column in the configuration CSV do?</a></li>
+<li><a class="reference internal" href="#how-are-distances-between-production-facility-and-port-handled">How are distances between production facility and port handled?</a></li>
+<li><a class="reference internal" href="#what-is-the-maximum-ship-range-from-port">What is the maximum ship range from port?</a></li>
+<li><a class="reference internal" href="#how-is-the-relationship-between-the-number-of-coral-species-and-functional-groups-handled">How is the relationship between the number of coral species and functional groups handled?</a></li>
+<li><a class="reference internal" href="#do-the-eia-output-files-contain-per-draw-cost-breakdowns">Do the EIA output files contain per-draw cost breakdowns?</a></li>
+<li><a class="reference internal" href="#do-the-cost-parameter-csv-files-reflect-the-actual-deployment-distance-used">Do the cost parameter CSV files reflect the actual deployment distance used?</a></li>
+<li><a class="reference internal" href="#are-there-any-manual-changes-i-need-to-do-to-the-cost-models">Are there any manual changes I need to do to the cost models?</a></li>
+<li><a class="reference internal" href="#can-i-change-the-production-facility">Can I change the production facility?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#additional-evaluate-parameters">Additional evaluate() parameters</a></li>
+<li><a class="reference internal" href="#cost-exploration-workflow">Cost exploration workflow</a></li>
+<li><a class="reference internal" href="#joint-cost-model-sampling">Joint cost model sampling</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

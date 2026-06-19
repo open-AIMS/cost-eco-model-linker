@@ -1,0 +1,320 @@
+rrap_cl.sampling
+================
+
+.. py:module:: rrap_cl.sampling
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   rrap_cl.sampling.THIS_DIR
+   rrap_cl.sampling.DEFAULT_PROD_VER
+   rrap_cl.sampling.DEFAULT_DEPLOY_VER
+   rrap_cl.sampling.DEFAULT_LM_VER
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.sampling.get_NK
+   rrap_cl.sampling.evaluate_spreadsheet
+   rrap_cl.sampling.calculate_deployment_cost
+   rrap_cl.sampling.calculate_production_cost
+   rrap_cl.sampling.load_config
+   rrap_cl.sampling.load_internal_config
+   rrap_cl.sampling.problem_spec
+   rrap_cl.sampling.convert_factor_types
+   rrap_cl.sampling.apply_discrete_mapping
+   rrap_cl.sampling.collect_production_costs
+   rrap_cl.sampling.collect_deployment_costs
+   rrap_cl.sampling.calculate_lm_cost
+   rrap_cl.sampling.collect_lm_costs
+   rrap_cl.sampling.run_lm_model
+   rrap_cl.sampling.run_deployment_model
+   rrap_cl.sampling.run_production_model
+   rrap_cl.sampling.extract_sa_results
+
+
+Module Contents
+---------------
+
+.. py:data:: THIS_DIR
+
+.. py:data:: DEFAULT_PROD_VER
+   :value: '3.9.1'
+
+
+.. py:data:: DEFAULT_DEPLOY_VER
+   :value: '3.9.0'
+
+
+.. py:data:: DEFAULT_LM_VER
+   :value: '3.9.6'
+
+
+.. py:function:: get_NK(nsims: int, n_factors: int, calc_second_order: bool = False) -> tuple[int, int]
+
+   Calculate the base Sobol' sample count N given a desired total number of
+   model evaluations and the number of input factors.
+
+   SALib's Saltelli sampler produces ``N * K`` samples where:
+   - ``K = 2 * n_factors + 2`` when ``calc_second_order=True``
+   - ``K = n_factors + 2``     when ``calc_second_order=False``
+
+   Returns the smallest N such that ``N * K >= nsims``.
+
+   :param nsims: Desired total number of model evaluations.
+   :type nsims: int
+   :param n_factors: Number of input factors (excluding output columns).
+   :type n_factors: int
+   :param calc_second_order: Whether second-order indices will be calculated. Must match the value
+                             passed to ``sample_sobol``. Default False.
+   :type calc_second_order: bool, optional
+
+   :returns: * **N** (*int*) -- Base sample count to pass to ``sample_sobol``.
+             * **K** (*int*) -- Saltelli multiplier.
+
+
+.. py:function:: evaluate_spreadsheet(wb, model_spec, params, factor_ranges=None) -> tuple[float, float]
+
+   Set input cells, trigger recalculation, and read back capex and opex.
+
+   This is the inner function for both cost models. All model-specific parameter
+   transformations (yield adjustment, reef name resolution, vessel type switching)
+   must be applied to `params` before calling this function.
+
+   :param wb: Open Excel workbook.
+   :type wb: Workbook
+   :param model_spec: Factor specification with columns: factor_names, sheet, cell_pos.
+   :type model_spec: DataFrame
+   :param params: Fully-resolved parameter values indexed by factor_names.
+   :type params: Series
+
+   :returns: * **capex** (*float*)
+             * **opex** (*float*)
+
+
+.. py:function:: calculate_deployment_cost(wb, model_spec, factors, factor_ranges=None)
+
+   Calculates set up and operational costs in the deployment cost model (wb), given a set of parameters to sample.
+
+   :param wb: The cost model as an excel workbook
+   :type wb: Workbook
+   :param model_spec: The cost model specification, detailing where cells are in the spreadsheet
+   :type model_spec: DataFrame
+   :param factors: Factor values to run cost model with
+   :type factors: DataFrameRow
+
+   :returns: * **capex** (*float*) -- Setup cost (CAPEX)
+             * **opex** (*float*) -- Operational cost (OPEX)
+
+
+.. py:function:: calculate_production_cost(wb, factor_spec, factors, factor_ranges=None)
+
+   Calculates set up and operational costs in the production cost model (wb), given a set of parameters to sample.
+
+   :param wb: The cost model as an excel workbook
+   :type wb: Workbook
+   :param factor_spec: Factor specification, as loaded from the config.csv
+   :type factor_spec: DataFrame
+   :param factors: Factor values to run model with
+   :type factors: DataFrameRow
+
+   :returns: * **capex** (*float*) -- Setup cost (CAPEX)
+             * **opex** (*float*) -- Operational cost (OPEX)
+
+
+.. py:function:: load_config()
+
+   Load configuration files for model sampling (production, deployment, and LM).
+
+
+.. py:function:: load_internal_config(fp)
+
+   Load internal config for model sampling
+
+   :param fp: Filename of config file within the package structure
+   :type fp: str
+
+
+.. py:function:: problem_spec(cost_type)
+
+   Create a problem specification for sampling cost models using SALib.
+
+   :param cost_type: String specifying cost model type, "production_params" or "deployment_params"
+   :type cost_type: str
+   :param config_filepath: String specifying filepath of config file, default is the default package config file
+   :type config_filepath: str
+
+   :returns: * **sp** (*dict*) -- ProblemSpec for sampling with SALib
+             * **model_spec** (*dataframe*) -- factor specification, as loaded from the config.csv
+
+
+.. py:function:: convert_factor_types(factors_df, is_cat)
+
+   SALib samples floats, so convert categorical variables to integers by taking the ceiling.
+
+   :param factors_df: A dataframe of sampled factors
+   :type factors_df: dataframe
+   :param is_cat: Boolian vector specifian whether each factor is categorical
+   :type is_cat: list{bool}
+
+   :returns: **factors_df**
+   :rtype: Updated sampled factor dataframe with categorical factors as integers
+
+
+.. py:function:: apply_discrete_mapping(factors_df, model_spec)
+
+   Map sampled integer indices back to their actual discrete values.
+   Only applies to factors with a discrete_values entry in model_spec.
+   Factors marked as is_cat without discrete_values are already handled
+   by the flooring trick in convert_factor_types.
+
+   :param factors_df: A dataframe of sampled factors
+   :type factors_df: dataframe
+   :param model_spec: Factor specification, as loaded from the config CSV
+   :type model_spec: dataframe
+
+   :returns: **factors_df**
+   :rtype: Updated sampled factor dataframe with discrete mappings applied
+
+   :raises ValueError: If the min/max of discrete_values does not match range_lower/range_upper
+
+
+.. py:function:: collect_production_costs(xlapp, wb, wb_path, cost_factors, factor_spec, workbook_session=None)
+
+   Run the production cost model.
+
+   :param xlapp: Excel application instance
+   :param wb: Open Excel workbook
+   :param wb_path: Path to the workbook file
+   :type wb_path: str
+   :param cost_factors: Dataframe of factors to input in the cost model
+   :type cost_factors: dataframe
+   :param factor_spec: Factor specification, as loaded from the config.csv
+   :type factor_spec: dataframe
+   :param workbook_session: A session object for caching and seeding optimization.
+   :type workbook_session: WorkbookSession, optional
+
+   :returns: * *wb* -- Updated workbook reference (may differ from input if resets occurred internally).
+             * **cost_factors** (*dataframe*) -- Updated sampled factor dataframe with costs added
+
+
+.. py:function:: collect_deployment_costs(xlapp, wb, wb_path, cost_factors, factor_spec, workbook_session=None)
+
+   Run the deployment cost model.
+
+   :param xlapp: Excel application instance
+   :param wb: Open Excel workbook
+   :param wb_path: Path to the workbook file
+   :type wb_path: str
+   :param cost_factors: Dataframe of factors to input in the cost model
+   :type cost_factors: dataframe
+   :param factor_spec: Factor specification, as loaded from the config.csv
+   :type factor_spec: dataframe
+   :param workbook_session: A session object for caching and seeding optimization.
+   :type workbook_session: WorkbookSession, optional
+
+   :returns: * *wb* -- Updated workbook reference (may differ from input if resets occurred internally).
+             * **cost_factors** (*dataframe*) -- Updated sampled factor dataframe with costs added
+
+
+.. py:function:: calculate_lm_cost(wb, factor_spec, factors, factor_ranges=None)
+
+   Calculates setup and operational costs in the LM (Larval Methods) cost model.
+
+   :param wb: Open Excel workbook.
+   :type wb: Workbook
+   :param factor_spec: Factor specification, as loaded from the config CSV.
+   :type factor_spec: DataFrame
+   :param factors: Factor values to run model with.
+   :type factors: DataFrameRow
+   :param factor_ranges: Pre-built {factor_name: Range} from ``_build_factor_ranges``.
+   :type factor_ranges: dict, optional
+
+   :returns: * **capex** (*float*)
+             * **opex** (*float*)
+
+
+.. py:function:: collect_lm_costs(xlapp, wb, wb_path, cost_factors, factor_spec, workbook_session=None)
+
+   Run the LM cost model.
+
+   :param xlapp: Excel application instance.
+   :param wb: Open Excel workbook.
+   :param wb_path: Path to the workbook file.
+   :type wb_path: str
+   :param cost_factors: Dataframe of factors to input in the cost model.
+   :type cost_factors: DataFrame
+   :param factor_spec: Factor specification, as loaded from the config CSV.
+   :type factor_spec: DataFrame
+   :param workbook_session: A session object for caching and seeding optimization.
+   :type workbook_session: WorkbookSession, optional
+
+   :returns: * *wb* -- Updated workbook reference (may differ from input if resets occurred internally).
+             * **cost_factors** (*DataFrame*) -- Updated sampled factor dataframe with costs added.
+
+
+.. py:function:: run_lm_model(cost_model: str, nsims: int, nprocs: int = 1)
+
+   Generate Sobol' samples for the LM model and run.
+
+   :param cost_model: Path to the LM cost model workbook, including extension (.xlsx).
+   :type cost_model: str
+   :param nsims: Desired total number of model evaluations.
+   :type nsims: int
+   :param nprocs: Number of parallel worker processes. Values <= 1 run serially. Default 1.
+   :type nprocs: int, optional
+
+   :rtype: SALib ProblemSpec with ``cost_model_results`` added as a field.
+
+
+.. py:function:: run_deployment_model(cost_model: str, nsims: int, nprocs: int = 1)
+
+   Generate Sobol' samples for the deployment model and run.
+
+   :param cost_model: Path to cost (spreadsheet) model
+   :type cost_model: str
+   :param nsims: Desired total number of model evaluations. The base Sobol' sample count
+                 N is derived via ``get_NK(nsims, n_factors)``, giving ``N*(2D+2)``
+                 actual evaluations (the closest multiple >= nsims).
+   :type nsims: int
+   :param nprocs: Number of parallel worker processes. Values <= 1 run serially. Default 1.
+   :type nprocs: int, optional
+
+   :rtype: SALib ProblemSpec with `cost_model_results` added as a field.
+
+
+.. py:function:: run_production_model(cost_model: str, nsims: int, nprocs: int = 1)
+
+   Generate Sobol' samples for the production model and run.
+
+   :param cost_model: Path to cost (spreadsheet) model, including extension (.xlsx)
+   :type cost_model: str
+   :param nsims: Desired total number of model evaluations. The base Sobol' sample count
+                 N is derived via ``get_NK(nsims, n_factors)``, giving ``N*(2D+2)``
+                 actual evaluations (the closest multiple >= nsims).
+   :type nsims: int
+   :param nprocs: Number of parallel worker processes. Values <= 1 run serially. Default 1.
+   :type nprocs: int, optional
+
+   :rtype: SALib ProblemSpec with `cost_model_results` added as a field.
+
+
+.. py:function:: extract_sa_results(sp: SALib.ProblemSpec, fig_path: str = './figs/')
+
+   Run PAWN sensitivity analysis on cost model results and save figures.
+
+   :param sp: Must have ``sp["cost_model_results"]`` set to a DataFrame with columns
+              matching ``sp["names"]`` plus ``"capex"`` and ``"opex"``.
+              Use ``sp["cost_model_results"] = results_df`` to attach results from
+              ``run_joint_cost_models`` before calling this function.
+   :type sp: ProblemSpec
+   :param fig_path: Directory where figures are saved.
+   :type fig_path: str
+
+

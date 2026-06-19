@@ -1,0 +1,121 @@
+rrap_cl.handlers.excel_handlers
+===============================
+
+.. py:module:: rrap_cl.handlers.excel_handlers
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   rrap_cl.handlers.excel_handlers.WorkbookSession
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   rrap_cl.handlers.excel_handlers.open_excel
+   rrap_cl.handlers.excel_handlers.close_excel
+   rrap_cl.handlers.excel_handlers.reset_workbook
+   rrap_cl.handlers.excel_handlers.cleanup_excel_processes
+
+
+Module Contents
+---------------
+
+.. py:function:: open_excel(fp, xlapp=None)
+
+   Open an Excel workbook.
+
+   :param fp: Path to the workbook file.
+   :type fp: str
+   :param xlapp: An existing Excel application instance to use. If None, a new
+                 isolated instance is created via DispatchEx. Pass an existing
+                 instance when opening multiple workbooks to avoid running several
+                 Excel processes simultaneously (which causes RPC_E_DISCONNECTED).
+   :type xlapp: Excel.Application, optional
+
+   :returns: * **xlapp** (*Excel.Application*)
+             * **wb** (*Workbook*)
+
+
+.. py:function:: close_excel(xlapp, wb, quit_app=True)
+
+   Close a workbook and optionally quit the Excel application.
+
+   :param xlapp:
+   :type xlapp: Excel.Application
+   :param wb:
+   :type wb: Workbook
+   :param quit_app: If True (default), quit the Excel application after closing the
+                    workbook. Pass False when the application hosts other open workbooks
+                    that should remain alive.
+   :type quit_app: bool
+
+
+.. py:function:: reset_workbook(xlapp, wb, fp)
+
+   Reset workbook state. (Optimized: No longer re-opens file)
+
+
+.. py:class:: WorkbookSession
+
+   Manages a persistent Excel application instance and caches open workbooks.
+
+   This class ensures that only one Excel process is created per worker and
+   that workbooks are reused across evaluations, significantly reducing the
+   overhead of DispatchEx and Workbooks.Open calls.
+
+
+   .. py:attribute:: xlapp
+      :value: None
+
+
+
+   .. py:attribute:: workbooks
+
+
+   .. py:attribute:: seeded
+
+
+   .. py:method:: open_workbook(fp)
+
+      Open a workbook or return a cached instance.
+
+
+
+   .. py:method:: is_seeded(fp)
+
+      Check if a workbook has already been seeded with baseline factors.
+
+
+
+   .. py:method:: mark_seeded(fp)
+
+      Mark a workbook as seeded.
+
+
+
+   .. py:method:: cleanup(uninitialize_com=True)
+
+      Close all workbooks and quit the Excel application.
+
+
+
+.. py:function:: cleanup_excel_processes()
+
+   Quit all running Excel instances via COM.
+
+   Enumerates the Windows Running Object Table (ROT) to find every open
+   Excel workbook, collects their parent Application objects (deduplicated
+   by window handle), and calls Quit() on each one.  This is safer than
+   force-killing excel.exe because Excel gets to free its own COM state
+   before the process exits.
+
+   :returns: Number of Excel Application instances that were closed.
+   :rtype: int
+
+
